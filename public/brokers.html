@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Brokers</title>
+  <link rel="stylesheet" href="css/parties.css">
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="logo">🌾 MandiLedger ERP</div>
+  <div class="nav-links">
+    <a href="dashboard.html">Dashboard</a>
+    <a href="parties.html">Parties</a>
+    <a href="brokers.html">Brokers</a>
+  </div>
+</nav>
+
+<div class="container">
+
+  <!-- LEFT -->
+  <div class="party-list">
+    <button class="add-btn" onclick="openBrokerModal()">➕ Add Broker</button>
+
+    <input
+      type="text"
+      class="search"
+      placeholder="🔍 Search broker..."
+      onkeyup="filterBrokers(this.value)"
+    >
+
+    <div id="brokerCards"></div>
+  </div>
+
+  <!-- RIGHT -->
+  <div class="party-details">
+    <h3 id="brokerTitle">Select a broker</h3>
+
+    <div class="summary">
+      <div class="sum-card blue">
+        <span>Mobile</span>
+        <h2 id="brMobile">—</h2>
+      </div>
+      <div class="sum-card green">
+        <span>State</span>
+        <h2 id="brState">—</h2>
+      </div>
+      <div class="sum-card red">
+        <span>District</span>
+        <h2 id="brDistrict">—</h2>
+      </div>
+    </div>
+
+    <p><b>Address:</b> <span id="brAddress">—</span></p>
+    <p><b>Pincode:</b> <span id="brPincode">—</span></p>
+  </div>
+
+</div>
+
+<!-- MODAL -->
+<div id="brokerModal" class="modal">
+  <div class="modal-content">
+    <h3>Add Broker</h3>
+
+    <input id="brName" placeholder="Broker Name">
+    <input id="brMobileInput" placeholder="Mobile">
+    <input id="brStateInput" placeholder="State">
+    <input id="brDistrictInput" placeholder="District">
+    <input id="brPincodeInput" placeholder="Pincode">
+    <textarea id="brAddressInput" placeholder="Address"></textarea>
+
+    <button onclick="saveBroker()">Save</button>
+    <button onclick="closeBrokerModal()">Cancel</button>
+  </div>
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/brokers.js"></script>
+</body>
+</html>

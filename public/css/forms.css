@@ -1,0 +1,7 @@
+body{font-family:Arial}
+input,select,button{padding:8px;margin:5px}
+nav{background:#1e293b;padding:10px}
+nav a{color:#fff;margin-right:12px;text-decoration:none}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:15px;padding:15px}
+.box{background:#fff;padding:20px;box-shadow:0 2px 6px #ccc}
+

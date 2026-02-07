@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Commodity Stock Report</title>
+  <link rel="stylesheet" href="css/stock-report.css">
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="logo">🌾 MandiLedger ERP</div>
+  <div class="nav-links">
+    <a href="dashboard.html">Dashboard</a>
+    <a href="parties.html">Parties</a>
+    <a href="purchase.html">Purchase</a>
+    <a href="sale.html">Sale</a>
+    <a href="ledger.html">Ledger</a>
+    <a href="payments.html">Payments</a>
+    <a href="reports.html">Reports</a>
+    <a href="#" onclick="logout()">Logout</a>
+  </div>
+</nav>
+
+<div class="container">
+  <h2>📊 Commodity-wise Stock Report</h2>
+
+  <table>
+    <thead>
+  <tr>
+    <th>Commodity</th>
+    <th>Available Stock</th>
+  </tr>
+</thead>
+<tbody id="stockTable">
+      <tr><td colspan="4">Loading…</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/stock-report.js"></script>
+</body>
+</html>

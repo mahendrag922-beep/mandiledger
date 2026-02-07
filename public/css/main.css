@@ -1,0 +1,79 @@
+body{font-family:Arial;background:#f4f6f8}
+.center{display:flex;justify-content:center;align-items:center;height:100vh}
+.card{background:#fff;padding:20px;width:320px;box-shadow:0 2px 8px #ccc}
+input,button{width:100%;padding:10px;margin-top:10px}
+button{background:#1e293b;color:#fff;border:0;cursor:pointer}
+a{margin-right:10px}
+/* =========================
+   LOGIN PAGE (ERP STYLE)
+========================= */
+
+.login-wrapper {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #f4f6f8;
+}
+
+.login-card {
+  width: 360px;
+  background: #ffffff;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.login-card h2 {
+  text-align: center;
+  margin-bottom: 5px;
+  color: #0f172a;
+}
+
+.subtitle {
+  text-align: center;
+  font-size: 14px;
+  color: #6b7280;
+  margin-bottom: 20px;
+}
+
+.login-card label {
+  font-size: 14px;
+  color: #374151;
+}
+
+.login-card input {
+  width: 100%;
+  padding: 10px;
+  margin: 6px 0 14px;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  font-size: 14px;
+}
+
+.login-card input:focus {
+  outline: none;
+  border-color: #2563eb;
+}
+
+.login-card button {
+  width: 100%;
+  padding: 10px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.login-card button:hover {
+  background: #1e40af;
+}
+
+.error {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #dc2626;
+  text-align: center;
+}

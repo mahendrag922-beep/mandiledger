@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Purchase</title>
+  <link rel="stylesheet" href="css/purchase.css">
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="logo">🌾 MandiLedger ERP</div>
+  <div class="nav-links">
+    <a href="dashboard.html">Dashboard</a>
+    <a href="parties.html">Parties</a>
+    <a href="purchase.html">Purchase</a>
+    <a href="sale.html">Sale</a>
+    <a href="ledger.html">Ledger</a>
+    <a href="payments.html">Payments</a>
+    <a href="#" onclick="logout()">Logout</a>
+  </div>
+</nav>
+
+<div class="container">
+
+  <div class="card">
+    <h2>📥 Purchase Entry (Farmer)</h2>
+
+    <!-- PARTY -->
+    <label>Farmer</label>
+    <select id="party_id">
+      <option value="">Select Farmer</option>
+    </select>
+
+    <!-- COMMODITY -->
+    <label>Commodity</label>
+<select id="commodity">
+  <option value="">Select Commodity</option>
+  <option value="paddy">Paddy</option>
+  <option value="wheat">Wheat</option>
+</select>
+
+    <!-- QUANTITY -->
+    <div class="row">
+  <div>
+    <label>Quantity (Quintal)</label>
+    <input id="quintal" type="number" min="0" value="0" oninput="calculate()">
+  </div>
+  <div>
+    <label>Quantity (Kg)</label>
+    <input id="kg" type="number" min="0" value="0" oninput="calculate()">
+  </div>
+</div>
+
+<label>Rate (₹ per Quintal)</label>
+<input id="rate" type="number" min="0" oninput="calculate()">
+
+    <!-- AMOUNT -->
+    <div class="amount-box">
+      Total Amount: ₹ <span id="amount">0.00</span>
+    </div>
+
+    <button onclick="savePurchase()">Save Purchase</button>
+  </div>
+
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/purchase.js"></script>
+</body>
+</html>

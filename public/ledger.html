@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Ledger</title>
+  <link rel="stylesheet" href="css/ledger.css">
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="logo">🌾 MandiLedger ERP</div>
+  <div class="nav-links">
+     <a href="dashboard.html">Dashboard</a>
+    <a href="parties.html">Parties</a>
+    <a href="purchase.html">Purchase</a>
+    <a href="sale.html">Sale</a>
+    <a href="ledger.html">Ledger</a>
+    <a href="payments.html">Payments</a>
+    <a href="stock-report.html">Stock Report</a>
+    <a href="reports.html">Reports</a>
+    <a href="#" onclick="logout()">Logout</a>  </div>
+</nav>
+
+<div class="container">
+
+  <!-- SEARCH SECTIONS -->
+  <div class="search-section">
+
+    <div class="search-card">
+      <h3>👨‍🌾 Farmer Ledger</h3>
+      <select id="farmerSelect">
+        <option value="">Select Farmer</option>
+      </select>
+      <button onclick="loadLedger('farmer')">View Ledger</button>
+    </div>
+
+    <div class="search-card">
+      <h3>🏭 Mill Ledger</h3>
+      <select id="millSelect">
+        <option value="">Select Mill</option>
+      </select>
+      <button onclick="loadLedger('mill')">View Ledger</button>
+    </div>
+
+  </div>
+
+  <!-- LEDGER DISPLAY -->
+  <div class="ledger-card">
+    <h3 id="ledgerTitle">Select a party to view ledger</h3>
+
+    <div class="summary">
+  <div class="sum debit">
+    <span id="labelDebit">Debit</span>: ₹ <span id="sumDebit">0.00</span>
+  </div>
+  <div class="sum credit">
+    <span id="labelCredit">Credit</span>: ₹ <span id="sumCredit">0.00</span>
+  </div>
+  <div class="sum balance">
+    <span id="labelBalance">Balance</span>: ₹ <span id="sumBalance">0.00</span>
+  </div>
+</div>
+
+    <table>
+      <thead>
+  <tr>
+    <th>Date & Time</th>
+    <th>Particular</th>
+    <th id="thDebit">Debit</th>
+    <th id="thCredit">Credit</th>
+  </tr>
+</thead>
+
+   <tbody id="ledgerTable">
+        <tr><td colspan="4">No data</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/ledger.js"></script>
+</body>
+</html>

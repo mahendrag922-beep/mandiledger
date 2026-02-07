@@ -1,0 +1,166 @@
+* {
+  box-sizing: border-box;
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+body {
+  margin: 0;
+  background: #f4f6f8;
+}
+
+/* NAVBAR */
+.navbar {
+  background: #0f172a;
+  padding: 14px 20px;
+  display: flex;
+  justify-content: space-between;
+  color: white;
+}
+
+.nav-links a {
+  color: #e5e7eb;
+  margin-left: 15px;
+  text-decoration: none;
+}
+
+/* LAYOUT */
+.container {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 20px;
+  padding: 20px;
+}
+
+/* PARTY LIST */
+.party-list {
+  background: white;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  overflow-y: auto;
+}
+
+.party-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  padding: 12px;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.party-card:hover {
+  background: #f1f5f9;
+}
+
+.badge {
+  font-size: 12px;
+  padding: 3px 8px;
+  border-radius: 12px;
+  color: white;
+}
+
+.farmer { background: #dc2626; }
+.mill { background: #16a34a; }
+.both { background: #2563eb; }
+
+/* DETAILS */
+.party-details {
+  background: white;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.sum-card {
+  padding: 15px;
+  border-radius: 8px;
+  color: white;
+}
+
+.red { background: #dc2626; }
+.green { background: #16a34a; }
+.blue { background: #2563eb; }
+
+/* TABLE */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 10px;
+  border-bottom: 1px solid #e5e7eb;
+}
+.search {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+}
+.add-btn {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  width: 300px;
+  border-radius: 8px;
+}
+
+.modal-content input,
+.modal-content select {
+  width: 100%;
+  margin-top: 5px;
+  padding: 8px;
+}
+
+.modal-actions {
+  margin-top: 15px;
+  text-align: right;
+}
+
+.modal-actions .cancel {
+  background: #e5e7eb;
+  color: #111;
+  margin-left: 10px;
+}
+.inactive {
+  opacity: 0.5;
+  pointer-events: none;
+}
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 9999;
+
+  display: none;          /* hidden by default */
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  background: #fff;
+  padding: 20px 24px;
+  border-radius: 10px;
+  min-width: 320px;
+  max-width: 420px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}

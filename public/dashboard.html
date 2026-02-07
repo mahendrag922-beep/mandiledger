@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>MandiLedger Dashboard</title>
+  <link rel="stylesheet" href="css/dashboard-new.css">
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="logo">🌾 MandiLedger ERP</div>
+  <div class="nav-links">
+    <a href="dashboard.html">Dashboard</a>
+    <a href="parties.html">Parties</a>
+    <a href="purchase.html">Purchase</a>
+    <a href="sale.html">Sale</a>
+    <a href="ledger.html">Ledger</a>
+    <a href="payments.html">Payments</a>
+    <a href="stock-report.html">Stock Report</a>
+    <a href="reports.html">Reports</a>
+    <a href="#" onclick="logout()">Logout</a>
+  </div>
+</nav>
+
+<div class="cards">
+
+  <div class="kpi-card blue">
+    <div class="kpi-left">
+      <span>Paddy Stock</span>
+      <h2 id="paddyStock">0 Qtl</h2>
+    </div>
+    <div class="kpi-icon">🌾</div>
+  </div>
+
+  <div class="kpi-card orange">
+    <div class="kpi-left">
+      <span>Wheat Stock</span>
+      <h2 id="wheatStock">0 Qtl</h2>
+    </div>
+    <div class="kpi-icon">🌾</div>
+  </div>
+
+  <div class="kpi-card red">
+    <div class="kpi-left">
+      <span>Farmer Payable</span>
+      <h2 id="payable">₹ 0.00</h2>
+    </div>
+    <div class="kpi-icon">👨‍🌾</div>
+  </div>
+
+  <div class="kpi-card green">
+    <div class="kpi-left">
+      <span>Mill Receivable</span>
+      <h2 id="receivable">₹ 0.00</h2>
+    </div>
+    <div class="kpi-icon">🏭</div>
+  </div>
+
+  <div class="kpi-card profit" id="profitCard">
+    <div class="kpi-left">
+      <span id="profitLabel">Profit / Loss</span>
+      <h2 id="profit">₹ 0.00</h2>
+    </div>
+    <div class="kpi-icon">💰</div>
+  </div>
+
+</div>
+
+  <!-- TABLES -->
+  <div class="tables">
+
+    <div class="table-box">
+      <h3>📥 Latest Purchases</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>Farmer</th>
+            <th>Amount</th>
+          </tr>
+        </thead>
+        <tbody id="purchaseTable">
+          <tr><td colspan="3">Loading…</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="table-box">
+      <h3>📤 Latest Sales</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>Mill</th>
+            <th>Amount</th>
+          </tr>
+        </thead>
+        <tbody id="saleTable">
+          <tr><td colspan="3">Loading…</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Parties</title>
+  <link rel="stylesheet" href="css/parties.css">
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="logo">🌾 MandiLedger ERP</div>
+  <div class="nav-links">
+    <a href="dashboard.html">Dashboard</a>
+    <a href="parties.html">Parties</a>
+    <a href="purchase.html">Purchase</a>
+    <a href="sale.html">Sale</a>
+    <a href="ledger.html">Ledger</a>
+    <a href="payments.html">Payments</a>
+    <a href="#" onclick="logout()">Logout</a>
+  </div>
+</nav>
+<button class="add-btn" onclick="openAddParty()">➕ Add Party</button>
+<input
+  type="text"
+  id="partySearch"
+  placeholder="🔍 Search party by name..."
+  onkeyup="filterParties()"
+  class="search"
+/>
+
+<div class="container">
+  <!-- LEFT: PARTY LIST -->
+  <div class="party-list">
+    <h3>👥 Parties</h3>
+    <div id="partyCards"></div>
+  </div>
+
+  <!-- RIGHT: PARTY DETAILS -->
+  <div class="party-details">
+    <h3 id="partyTitle">Select a party</h3>
+
+    <div class="summary">
+  <div class="sum-card red">
+    <span id="leftLabel">Total Payable</span>
+    <h2 id="payable">₹ 0.00</h2>
+  </div>
+
+  <div class="sum-card green">
+    <span id="rightLabel">Total Received</span>
+    <h2 id="received">₹ 0.00</h2>
+  </div>
+
+  <div class="sum-card blue">
+    <span>Balance Left</span>
+    <h2 id="balance">₹ 0.00</h2>
+  </div>
+</div>
+
+<div style="margin-bottom:10px;">
+  From:
+  <input type="date" id="fromDate">
+  To:
+  <input type="date" id="toDate">
+  <button onclick="applyDateFilter()">Filter</button>
+</div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Particular</th>
+          <th>Debit</th>
+          <th>Credit</th>
+        </tr>
+      </thead>
+      <tbody id="historyTable">
+        <tr><td colspan="4">Select a party to view history</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+<div id="partyModal" class="modal">
+  <div class="modal-content">
+    <h3>Add New Party</h3>
+
+    <label>Party Name</label>
+    <input id="partyName" placeholder="e.g. Ram Singh">
+
+    <label>Party Type</label>
+<select id="partyType" onchange="togglePartyFields()">
+  <option value="">Select Type</option>
+  <option value="farmer">Farmer</option>
+  <option value="mill">Mill</option>
+</select>
+
+<div id="farmerFields" style="display:none;">
+  <label>Mobile Number</label>
+  <input id="mobile" placeholder="10 digit mobile">
+
+  <label>Address</label>
+  <textarea id="address" placeholder="Village / City / State"></textarea>
+</div>
+
+<div id="millFields" style="display:none;">
+  <label>GST Number</label>
+  <input id="gstn" placeholder="15-digit GSTIN">
+
+  <label>Company Name</label>
+  <input id="companyName" placeholder="Company name">
+
+  <label>Address</label>
+  <textarea id="companyAddress"></textarea>
+
+  <label>District</label>
+  <input id="district" placeholder="District">
+
+  <label>State</label>
+  <input id="state" placeholder="State">
+
+  <label>Pincode</label>
+  <input id="pincode" placeholder="6 digit pincode">
+</div>
+
+
+    <div class="modal-actions">
+      <button onclick="saveParty()">Save</button>
+      <button class="cancel" onclick="closeAddParty()">Cancel</button>
+    </div>
+  </div>
+</div>
+<div id="farmerModal" class="modal">
+  <div class="modal-content">
+    <h3>👨‍🌾 Farmer Details</h3>
+    <p><b>Name:</b> <span id="fmName"></span></p>
+    <p><b>Mobile:</b> <span id="fmMobile"></span></p>
+    <p><b>Address:</b> <span id="fmAddress"></span></p>
+    <button onclick="closeModal()">Close</button>
+  </div>
+</div>
+<div id="millModal" class="modal">
+  <div class="modal-content">
+    <h3>🏭 Mill Details</h3>
+
+    <p><b>Company:</b> <span id="mmCompany"></span></p>
+    <p><b>GSTN:</b> <span id="mmGSTN"></span></p>
+    <p><b>Address:</b> <span id="mmAddress"></span></p>
+    <p><b>State:</b> <span id="mmState"></span></p>
+    <p><b>District:</b> <span id="mmDistrict"></span></p>
+    <p><b>Pincode:</b> <span id="mmPincode"></span></p>
+
+    <button onclick="closeMillModal()">Close</button>
+  </div>
+</div>
+
+
+<script src="js/api.js"></script>
+<script src="js/parties.js"></script>
+<script>
+  window.onclick = function(e) {
+    const modal = document.getElementById("farmerModal");
+    if (e.target === modal) {
+      modal.style.display = "none";
+    }
+  }
+</script>
+
+</body>
+</html>

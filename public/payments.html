@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Payments</title>
+  <link rel="stylesheet" href="css/payments.css">
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="logo">🌾 MandiLedger ERP</div>
+  <div class="nav-links">
+    <a href="dashboard.html">Dashboard</a>
+    <a href="parties.html">Parties</a>
+    <a href="purchase.html">Purchase</a>
+    <a href="sale.html">Sale</a>
+    <a href="ledger.html">Ledger</a>
+    <a href="payments.html">Payments</a>
+    <a href="reports.html">Reports</a>
+    <a href="#" onclick="logout()">Logout</a>
+  </div>
+</nav>
+
+<div class="container">
+
+  <!-- PAYMENT FORM -->
+  <div class="card">
+    <h3>💰 Add Payment</h3>
+
+    <label>Party ID</label>
+    <input id="party_id" placeholder="e.g. 1">
+
+    <label>Amount (₹)</label>
+    <input id="amount" placeholder="e.g. 5000">
+
+    <label>Payment Type</label>
+    <select id="payment_type">
+      <option value="cash">Cash</option>
+      <option value="bank">Bank</option>
+      <option value="upi">UPI</option>
+    </select>
+
+    <label>Direction</label>
+    <select id="direction">
+      <option value="paid">Paid (to Farmer)</option>
+      <option value="received">Received (from Mill)</option>
+    </select>
+
+    <button onclick="savePayment()">Save Payment</button>
+  </div>
+
+  <!-- DUE ALERTS -->
+  <div class="card">
+    <h3>⏰ Payment Due Alerts</h3>
+
+    <table>
+  <thead>
+    <tr>
+      <th>Party ID</th>
+      <th>Party Name</th>
+      <th>Amount (₹)</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <tbody id="dueTable">
+    <tr><td colspan="4">Loading…</td></tr>
+  </tbody>
+</table>
+
+  </div>
+
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/payments.js"></script>
+</body>
+</html>

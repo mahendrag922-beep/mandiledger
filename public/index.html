@@ -1,0 +1,49 @@
+<!-- <!DOCTYPE html>
+<html>
+<head>
+  <title>MandiLedger Login</title>
+  <link rel="stylesheet" href="css/main.css">
+</head>
+<body class="center">
+  <div class="card">
+    <h2>MandiLedger ERP</h2>
+    <input id="email" placeholder="Email" value="trader@mail.com">
+    <input id="password" type="password" placeholder="Password" value="1234">
+    <button onclick="login()">Login</button>
+    <p id="err"></p>
+  </div>
+  <script src="js/auth.js"></script>
+</body>
+</html> -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Mandi ERP | Login</title>
+  <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+
+<div class="login-wrapper">
+  <div class="login-card">
+    <h2>🌾 Mandi ERP</h2>
+    <p class="subtitle">Trader & Munim Login</p>
+
+    <form onsubmit="login(); return false;" id="loginForm">
+  <label>Email</label>
+  <input type="email" id="email" placeholder="Enter email" required>
+
+  <label>Password</label>
+  <input type="password" id="password" placeholder="Enter password" required>
+
+  <button type="submit">Login</button>
+
+  <p id="err" class="error"></p>
+</form>
+
+  </div>
+</div>
+
+<script src="js/auth.js"></script>
+</body>
+</html>

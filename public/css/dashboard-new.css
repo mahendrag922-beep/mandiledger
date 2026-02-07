@@ -1,0 +1,256 @@
+* {
+  box-sizing: border-box;
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+body {
+  margin: 0;
+  background: #f4f6f8;
+}
+
+/* NAVBAR */
+.navbar {
+  background: #0f172a;
+  color: white;
+  padding: 14px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.nav-links a {
+  color: #e5e7eb;
+  margin-left: 15px;
+  text-decoration: none;
+}
+
+.nav-links a:hover {
+  color: #fff;
+}
+
+/* CONTAINER */
+.container {
+  padding: 20px;
+}
+
+/* CARDS */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 25px;
+}
+
+.card {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.card span {
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.card h2 {
+  margin-top: 8px;
+  font-size: 26px;
+}
+
+.card.profit {
+  border-left: 5px solid #2563eb;
+}
+
+.card.success {
+  border-left: 5px solid #16a34a;
+}
+
+.card.danger {
+  border-left: 5px solid #dc2626;
+}
+
+/* TABLES */
+.tables {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.table-box {
+  background: white;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.table-box h3 {
+  margin-bottom: 10px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 10px;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: left;
+}
+
+th {
+  background: #f1f5f9;
+}
+.amount {
+  font-size: 28px;
+  font-weight: bold;
+  transition: color 0.4s ease;
+}
+
+.red {
+  color: #dc2626; /* payable */
+}
+
+.green {
+  color: #16a34a; /* receivable */
+}
+
+.neutral {
+  color: #374151;
+}
+/* ===== MODERN KPI CARDS ===== */
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+  margin-bottom: 25px;
+}
+
+.kpi-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 20px;
+  border-radius: 14px;
+  color: #fff;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+}
+
+.kpi-card span {
+  font-size: 13px;
+  opacity: 0.9;
+}
+
+.kpi-card h2 {
+  margin-top: 6px;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.kpi-icon {
+  font-size: 36px;
+  opacity: 0.9;
+}
+
+/* Color variants */
+.kpi-card.blue {
+  background: linear-gradient(135deg, #2563eb, #1e40af);
+}
+
+.kpi-card.orange {
+  background: linear-gradient(135deg, #f97316, #ea580c);
+}
+
+.kpi-card.green {
+  background: linear-gradient(135deg, #16a34a, #15803d);
+}
+
+.kpi-card.red {
+  background: linear-gradient(135deg, #dc2626, #991b1b);
+}
+
+.kpi-card.profit {
+  background: linear-gradient(135deg, #0f172a, #020617);
+}
+/* ===== FIX VALUE VISIBILITY IN KPI CARDS ===== */
+
+/* Common value style */
+.kpi-card h2 {
+  color: #ffffff;              /* force white */
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+/* Label text */
+.kpi-card span {
+  color: rgba(255,255,255,0.85);
+}
+
+/* Farmer Payable – Red card */
+.kpi-card.red h2 {
+  color: #fff;                 /* pure white */
+}
+
+/* Mill Receivable – Green card */
+.kpi-card.green h2 {
+  color: #ffffff;              /* pure white */
+}
+
+/* Profit / Loss card */
+.kpi-card.profit h2 {
+  color: #ffffff;              /* always visible */
+}
+
+/* OPTIONAL: Loss state (if you later toggle class) */
+.kpi-card.loss h2 {
+  color: #fee2e2;              /* light red */
+}
+/* ===== KPI CARD LABEL VISIBILITY FIX ===== */
+
+/* Card label text (Paddy, Wheat, Profit, etc.) */
+.kpi-card span {
+  font-size: 14px;             /* bigger */
+  font-weight: 600;            /* bolder */
+  letter-spacing: 0.4px;
+  text-transform: uppercase;   /* ERP style */
+  color: #ffffff;              /* force white */
+  opacity: 0.95;               /* remove faded look */
+}
+
+/* Optional: add separator feel */
+.kpi-left span {
+  display: inline-block;
+  margin-bottom: 4px;
+}
+
+/* Profit label special clarity */
+#profitLabel {
+  color: #44ce82;
+  font-weight: 700;
+}
+
+/* Farmer Payable label */
+.kpi-card.red span {
+  color: #fff7ed;              /* warm white */
+}
+
+/* Mill Receivable label */
+.kpi-card.green span {
+  color: #ecfdf5;              /* soft white-green */
+}
+
+/* Paddy / Wheat stock labels */
+.kpi-card.blue span,
+.kpi-card.orange span {
+  color: #eff6ff;              /* soft white-blue */
+}
+.navbar {
+  margin-bottom: 25px;
+}

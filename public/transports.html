@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Transport</title>
+  <link rel="stylesheet" href="css/transport.css"> <!-- reuse same UI -->
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="logo">🌾 MandiLedger ERP</div>
+  <div class="nav-links">
+    <a href="dashboard.html">Dashboard</a>
+    <a href="parties.html">Parties</a>
+    <a href="purchase.html">Purchase</a>
+    <a href="sale.html">Sale</a>
+    <a href="ledger.html">Ledger</a>
+    <a href="payments.html">Payments</a>
+    <a href="transports.html" class="active">Transport</a>
+    <a href="#" onclick="logout()">Logout</a>
+  </div>
+</nav>
+
+<!-- ACTION BAR -->
+<button class="add-btn" onclick="openTransportModal()">➕ Add Transport</button>
+
+<input
+  type="text"
+  id="transportSearch"
+  placeholder="🔍 Search transport company..."
+  class="search"
+  onkeyup="filterTransports()"
+/>
+
+<div class="container">
+
+  <!-- LEFT : TRANSPORT LIST -->
+  <div class="party-list">
+    <h3>🚛 Transport Companies</h3>
+    <div id="transportCards">
+      <!-- cards loaded by JS -->
+    </div>
+  </div>
+
+  <!-- RIGHT : TRANSPORT DETAILS -->
+  <div class="party-details">
+    <h3 id="transportTitle">Select a transport</h3>
+
+    <!-- SUMMARY -->
+    <div class="summary">
+      <div class="sum-card blue">
+        <span>Company Mobile</span>
+        <p>
+    Primary: <b id="companyMobilePrimary">—</b><br>
+    Alternate: <b id="companyMobileAlt">—</b>
+  </p>
+      </div>
+
+      <div class="sum-card green">
+        <span>District</span>
+        <h2 id="companyDistrict">—</h2>
+      </div>
+
+      <div class="sum-card red">
+        <span>Pincode</span>
+        <h2 id="companyPincode">—</h2>
+      </div>
+    </div>
+
+    <!-- ADDRESS -->
+    <div style="margin-bottom:15px;">
+      <b>📍 Address</b>
+      <p id="companyAddress">—</p>
+    </div>
+
+    <hr>
+
+    <!-- DRIVER SECTION -->
+    <h4>👨‍✈️ Driver Details</h4>
+
+    <label>Select Driver</label>
+    <select id="driverSelect" onchange="showDriverMobile()">
+      <option value="">Select driver</option>
+    </select>
+
+    <p>📞 Driver Mobile: <b id="driverMobile">—</b></p>
+
+    <hr>
+
+    <!-- VEHICLE SECTION -->
+    <h4>🚚 Vehicle Details</h4>
+
+    <label>Select Vehicle</label>
+    <select id="vehicleSelect" onchange="showVehicleTyres()">
+      <option value="">Select vehicle</option>
+    </select>
+
+    <p>🔧 No. of Tyres: <b id="vehicleTyres">—</b></p>
+
+  </div>
+
+</div>
+
+<!-- ADD TRANSPORT MODAL -->
+<div id="transportModal" class="modal">
+  <div class="modal-content">
+
+  <h3 id ="transportModalTitle">🚛 Add Transport Company</h3>
+
+  <div class="modal-grid">
+
+    <!-- COMPANY DETAILS -->
+    <div>
+      <label>Company Name</label>
+      <input id="company_name">
+
+      <label>Primary Mobile</label>
+      <input id="mobile_primary">
+
+      <label>Alternate Mobile</label>
+      <input id="mobile_alt">
+    </div>
+
+    <div>
+      <label>Address</label>
+      <textarea id="address"></textarea>
+
+      <label>District</label>
+      <input id="district">
+
+      <label>State</label>
+      <input id="state">
+
+      <label>Pincode</label>
+      <input id="pincode">
+    </div>
+
+    <!-- DRIVERS -->
+    <div class="full">
+      <h4>👨‍✈️ Drivers</h4>
+      <div id="driversBox"></div>
+      <button type="button" onclick="addDriverRow()">➕ Add Driver</button>
+    </div>
+
+    <!-- VEHICLES -->
+    <div class="full">
+      <h4>🚚 Vehicles</h4>
+      <div id="vehiclesBox"></div>
+      <button type="button" onclick="addVehicleRow()">➕ Add Vehicle</button>
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <div class="modal-actions">
+    <button onclick="saveTransport()">Save</button>
+    <button class="cancel" onclick="closeTransportModal()">Cancel</button>
+  </div>
+
+</div>
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/transports.js"></script>
+
+</body>
+</html>

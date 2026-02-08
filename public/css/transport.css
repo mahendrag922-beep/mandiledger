@@ -1,0 +1,248 @@
+/* ===============================
+   GLOBAL
+================================ */
+* {
+  box-sizing: border-box;
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+body {
+  margin: 0;
+  background: #f4f6f8;
+}
+
+/* ===============================
+   NAVBAR (SAME AS DASHBOARD)
+================================ */
+.navbar {
+  background: #0f172a;
+  padding: 14px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #fff;
+}
+
+.nav-links a {
+  color: #e5e7eb;
+  margin-left: 15px;
+  text-decoration: none;
+}
+
+.nav-links a:hover {
+  color: #fff;
+}
+
+/* ===============================
+   ACTION BAR
+================================ */
+.add-btn {
+  width: calc(100% - 40px);   /* full length like Parties */
+  margin: 15px 20px 10px;
+  padding: 10px;
+
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.add-btn:hover {
+  background: #1e40af;
+}
+
+.search {
+  margin: 0 20px 15px;
+  width: calc(100% - 40px);
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+}
+
+/* ===============================
+   LAYOUT
+================================ */
+.container {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 20px;
+  padding: 20px;
+}
+
+/* ===============================
+   LEFT LIST (TRANSPORT CARDS)
+================================ */
+.party-list {
+  background: #fff;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  overflow-y: auto;
+}
+
+.party-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.party-card:hover {
+  background: #f1f5f9;
+}
+
+/* ===============================
+   RIGHT DETAILS
+================================ */
+.party-details {
+  background: #fff;
+  padding: 18px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+/* ===============================
+   SUMMARY CARDS
+================================ */
+.summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.sum-card {
+  padding: 15px;
+  border-radius: 10px;
+  color: #fff;
+}
+
+.blue { background: #2563eb; }
+.green { background: #16a34a; }
+.red { background: #dc2626; }
+
+/* ===============================
+   MODAL OVERLAY
+================================ */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+/* ===============================
+   WIDE MODAL CONTENT
+================================ */
+.modal-content {
+  background: #fff;
+  border-radius: 12px;
+  padding: 22px;
+
+  width: 950px;           /* 🔥 WIDE */
+  max-width: 95vw;
+  max-height: 85vh;       /* 🔥 LIMIT HEIGHT */
+  overflow-y: auto;       /* 🔥 INTERNAL SCROLL */
+
+  box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+}
+
+/* ===============================
+   MODAL GRID
+================================ */
+.modal-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.full {
+  grid-column: 1 / -1;
+}
+
+/* ===============================
+   FORM ELEMENTS
+================================ */
+label {
+  font-size: 13px;
+  color: #374151;
+  display: block;
+  margin-top: 10px;
+}
+
+input, textarea, select {
+  width: 100%;
+  padding: 8px;
+  margin-top: 4px;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+}
+
+/* ===============================
+   DRIVER / VEHICLE ROWS
+================================ */
+.inline-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+/* ===============================
+   MODAL FOOTER (STICKY)
+================================ */
+.modal-actions {
+  position: sticky;
+  bottom: 0;
+  background: #fff;
+  padding-top: 15px;
+  margin-top: 20px;
+  text-align: right;
+  border-top: 1px solid #e5e7eb;
+}
+
+.modal-actions button {
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
+
+.modal-actions .cancel {
+  background: #e5e7eb;
+  color: #111;
+  margin-left: 10px;
+}
+
+.modal-actions button:not(.cancel) {
+  background: #2563eb;
+  color: #fff;
+}
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.remove-btn {
+  background: #dc2626;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+.remove-btn:hover {
+  background: #b91c1c;
+}
+

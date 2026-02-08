@@ -20,6 +20,7 @@ app.use("/api/ledger", require("./routes/ledger.routes"));
 app.use("/api/reports", require("./routes/report.routes"));
 app.use("/api/stock", require("./routes/stock.routes"));
 app.use("/api/brokers", require("./routes/broker.routes"));
+app.use("/api/transports", require("./routes/transport.routes"));
 
 app.use(errorHandler);
 

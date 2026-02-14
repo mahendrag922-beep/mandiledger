@@ -76,3 +76,31 @@ exports.deleteTransport = async (req, res, next) => {
   await Transport.softDelete(req.params.id);
   res.json({ status: "success" });
 };
+
+exports.addDriverToTransport = async (req, res, next) => {
+  const conn = await pool.getConnection();
+
+  try {
+    const { id } = req.params; // transport id
+    const { driver_name, mobile } = req.body;
+
+    if (!driver_name || !mobile) {
+      throw new AppError("Driver name and mobile required", 400);
+    }
+
+    await Driver.addDriver(conn, id, {
+      driver_name,
+      mobile
+    });
+
+    res.json({
+      status: "success",
+      message: "Driver added successfully"
+    });
+
+  } catch (err) {
+    next(err);
+  } finally {
+    conn.release();
+  }
+};

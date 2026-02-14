@@ -2,7 +2,7 @@
 <html>
 <head>
   <title>Brokers</title>
-  <link rel="stylesheet" href="css/parties.css">
+  <link rel="stylesheet" href="css/brokers.css">
 </head>
 <body>
 
@@ -11,65 +11,91 @@
   <div class="nav-links">
     <a href="dashboard.html">Dashboard</a>
     <a href="parties.html">Parties</a>
-    <a href="brokers.html">Brokers</a>
+    <a href="transports.html">Transport</a>
+    <a href="purchase.html">Purchase</a>
+    <a href="sale.html">Sale</a>
+    <a href="ledger.html">Ledger</a>
+    <a href="payments.html">Payments</a>
+    <a href="vouchers.html" class="active">Vouchers</a>
+    <a href="stock-report.html">Stock Report</a>
+    <a href="reports.html">Reports</a>
+    <a href="#" onclick="logout()">Logout</a>
   </div>
 </nav>
 
 <div class="container">
 
-  <!-- LEFT -->
-  <div class="party-list">
+  <!-- LEFT SIDE -->
+  <div class="left-panel">
+
     <button class="add-btn" onclick="openBrokerModal()">➕ Add Broker</button>
 
     <input
       type="text"
-      class="search"
+      id="brokerSearch"
       placeholder="🔍 Search broker..."
-      onkeyup="filterBrokers(this.value)"
-    >
+      onkeyup="filterBrokers()"
+      class="search"
+    />
 
-    <div id="brokerCards"></div>
+    <div id="brokerList"></div>
+
   </div>
 
-  <!-- RIGHT -->
-  <div class="party-details">
-    <h3 id="brokerTitle">Select a broker</h3>
+  <!-- RIGHT SIDE -->
+  <div class="right-panel">
 
-    <div class="summary">
-      <div class="sum-card blue">
-        <span>Mobile</span>
-        <h2 id="brMobile">—</h2>
+    <h3 id="brokerTitle">Select a Broker</h3>
+
+    <div class="detail-cards">
+
+      <div class="detail-card">
+        <h4>🏢 Company</h4>
+        <p id="detailCompany">-</p>
       </div>
-      <div class="sum-card green">
-        <span>State</span>
-        <h2 id="brState">—</h2>
+
+      <div class="detail-card">
+        <h4>📞 Contact</h4>
+        <p id="detailMobile1">-</p>
+        <p id="detailMobile2">-</p>
       </div>
-      <div class="sum-card red">
-        <span>District</span>
-        <h2 id="brDistrict">—</h2>
+
+      <div class="detail-card">
+        <h4>📍 Address</h4>
+        <p id="detailAddress">-</p>
+        <p id="detailLocation">-</p>
       </div>
+
     </div>
 
-    <p><b>Address:</b> <span id="brAddress">—</span></p>
-    <p><b>Pincode:</b> <span id="brPincode">—</span></p>
   </div>
 
 </div>
 
 <!-- MODAL -->
 <div id="brokerModal" class="modal">
-  <div class="modal-content">
-    <h3>Add Broker</h3>
+  <div class="modal-box">
 
-    <input id="brName" placeholder="Broker Name">
-    <input id="brMobileInput" placeholder="Mobile">
-    <input id="brStateInput" placeholder="State">
-    <input id="brDistrictInput" placeholder="District">
-    <input id="brPincodeInput" placeholder="Pincode">
-    <textarea id="brAddressInput" placeholder="Address"></textarea>
+    <h3>➕ Add Broker</h3>
 
-    <button onclick="saveBroker()">Save</button>
-    <button onclick="closeBrokerModal()">Cancel</button>
+    <div class="form-grid">
+      <input id="broker_name" placeholder="Broker Name">
+      <input id="company_name" placeholder="Company Name">
+
+      <input id="mobile_primary" placeholder="Primary Mobile">
+      <input id="mobile_alt" placeholder="Alternate Mobile">
+
+      <input id="address" placeholder="Address" class="full">
+      <input id="district" placeholder="District">
+      <input id="state" placeholder="State">
+      <input id="pincode" placeholder="Pincode">
+    </div>
+
+    <div class="modal-footer">
+      <button onclick="saveBroker()">Save</button>
+      <button class="cancel" onclick="closeBrokerModal()">Cancel</button>
+    </div>
+
   </div>
 </div>
 

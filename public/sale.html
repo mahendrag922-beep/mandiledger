@@ -2,7 +2,7 @@
 <html>
 <head>
   <title>Sale</title>
-  <link rel="stylesheet" href="css/purchase.css">
+  <link rel="stylesheet" href="css/sale.css">
 </head>
 <body>
 
@@ -11,60 +11,115 @@
   <div class="nav-links">
     <a href="dashboard.html">Dashboard</a>
     <a href="parties.html">Parties</a>
+    <a href="brokers.html">Brokers</a>
+    <a href="transports.html">Transport</a>
     <a href="purchase.html">Purchase</a>
-    <a href="sale.html">Sale</a>
     <a href="ledger.html">Ledger</a>
     <a href="payments.html">Payments</a>
+    <a href="vouchers.html" class="active">Vouchers</a>
+    <a href="stock-report.html">Stock Report</a>
+    <a href="reports.html">Reports</a>
     <a href="#" onclick="logout()">Logout</a>
   </div>
 </nav>
 
-<div class="container">
+<div class="sale-container">
 
-  <div class="card">
+  <!-- LEFT SIDE FORM -->
+  <div class="sale-card">
+
     <h2>📤 Sale Entry (Mill)</h2>
 
-    <!-- MILL -->
-    <label>Mill</label>
-    <select id="party_id">
-      <option value="">Select Mill</option>
-    </select>
+    <label>Mill Name</label>
+    <input id="millSearch" placeholder="Search Mill">
+    <div id="millList" class="dropdown"></div>
 
-    <!-- COMMODITY -->
+    <div class="info-grid">
+      <div>GST No: <span id="millGst">-</span></div>
+      <div>Place of Supply: <span id="millState">-</span></div>
+    </div>
+
     <label>Commodity</label>
-<select id="commodity" onchange="loadStockForCommodity(this.value)">
+<select id="commoditySelect" onchange="selectCommodity(this.value)">
   <option value="">Select Commodity</option>
-  <option value="paddy">Paddy</option>
-  <option value="wheat">Wheat</option>
 </select>
 
-<!--LIVE STOCK -->
-<div class="stock-info">
-  Available Stock: <b id="availableStock">0 Qtl</b>
+<div class="info-grid">
+  <div>HSN: <span id="hsnDisplay">-</span></div>
+  <div>Available: <span id="availableStockKg">0 Kg</span></div>
 </div>
 
-    <!-- QUANTITY -->
+    <label>Broker</label>
+<select id="brokerSelect" onchange="selectBroker(this.value)">
+  <option value="">Select Broker</option>
+</select>
+
+<div class="info-grid">
+  <div>Referred By: <span id="brokerCompany">-</span></div>
+  <div>Primary Mobile: <span id="brokerMobile">-</span></div>
+</div>
+
+    <label>Transport Company</label>
+<select id="transportSelect" onchange="selectTransport(this.value)">
+  <option value="">Select Transport</option>
+</select>
+
+<div class="info-grid">
+  <div>Driver</div>
+  <div>
+    <select id="driverSelect" onchange="selectDriver(this.value)">
+      <option value="">Select Driver</option>
+    </select>
+    <button type="button" class="mini-btn" onclick="openAddDriver()">+ Add Driver</button>
+  </div>
+</div>
+
+<div class="info-grid">
+  <div>Driver Mobile:</div>
+  <div><span id="driverMobile">-</span></div>
+</div>
+
+<label>Vehicle No</label>
+<select id="vehicleSelect">
+  <option value="">Select Vehicle</option>
+</select>
+
     <div class="row">
       <div>
-        <label>Quantity (Quintal)</label>
-        <input id="quintal" type="number" min="0" value="0" oninput="calculate()">
+        <label>Quintal</label>
+        <input id="saleQtl" type="number" oninput="calculateSale()">
       </div>
       <div>
-        <label>Quantity (Kg)</label>
-        <input id="kg" type="number" min="0" value="0" oninput="calculate()">
+        <label>Kg</label>
+        <input id="saleKg" type="number" oninput="calculateSale()">
       </div>
     </div>
 
-    <!-- RATE -->
-    <label>Rate (₹ per Quintal)</label>
-    <input id="rate" type="number" min="0" oninput="calculate()">
+    <label>Rate (₹/Kg)</label>
+    <input id="saleRate" type="number" oninput="calculateSale()">
 
-    <!-- AMOUNT -->
-    <div class="amount-box">
-      Total Amount: ₹ <span id="amount">0.00</span>
+    <button onclick="saveSale()">💾 Save Sale Voucher</button>
+
+  </div>
+
+  <!-- RIGHT SIDE SUMMARY -->
+  <div class="sale-summary">
+
+    <div class="summary-card">
+      <label>Available Stock (Kg)</label>
+      <h3 id="availableStockKg1">0 Kg</h3>
     </div>
 
-    <button onclick="saveSale()">Save Sale</button>
+    <div class="summary-card">
+      <label>Total Weight (Kg)</label>
+      <h3 id="saleFinalWeight">0 Kg</h3>
+    </div>
+
+    <div class="summary-card highlight">
+      <label>Final Amount (₹)</label>
+      <h2 id="saleFinalAmount">0.00</h2>
+    </div>
+
   </div>
 
 </div>

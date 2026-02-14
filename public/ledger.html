@@ -9,15 +9,17 @@
 <nav class="navbar">
   <div class="logo">🌾 MandiLedger ERP</div>
   <div class="nav-links">
-     <a href="dashboard.html">Dashboard</a>
+        <a href="dashboard.html">Dashboard</a>
     <a href="parties.html">Parties</a>
+    <a href="brokers.html">Brokers</a>
+    <a href="transports.html">Transport</a>
     <a href="purchase.html">Purchase</a>
     <a href="sale.html">Sale</a>
-    <a href="ledger.html">Ledger</a>
     <a href="payments.html">Payments</a>
+    <a href="vouchers.html" class="active">Vouchers</a>
     <a href="stock-report.html">Stock Report</a>
     <a href="reports.html">Reports</a>
-    <a href="#" onclick="logout()">Logout</a>  </div>
+    <a href="#" onclick="logout()">Logout</a>
 </nav>
 
 <div class="container">
@@ -60,9 +62,10 @@
 </div>
 
     <table>
-      <thead>
+    <thead>
   <tr>
     <th>Date & Time</th>
+    <th>Voucher No</th>
     <th>Particular</th>
     <th id="thDebit">Debit</th>
     <th id="thCredit">Credit</th>

@@ -1,0 +1,267 @@
+/* ==============================
+   GLOBAL
+================================= */
+* {
+  box-sizing: border-box;
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+body {
+  margin: 0;
+  background: #f4f6f9;
+}
+
+/* ==============================
+   NAVBAR (same as dashboard)
+================================= */
+/* NAVBAR */
+.navbar {
+  background: #0f172a;
+  color: white;
+  padding: 14px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.nav-links a {
+  color: #e5e7eb;
+  margin-left: 15px;
+  text-decoration: none;
+}
+
+.nav-links a:hover {
+  color: #fff;
+}
+
+/* ==============================
+   CONTAINER
+================================= */
+.container {
+  padding: 30px;
+  display: flex;
+  justify-content: center;
+}
+
+/* ==============================
+   SALE CARD (WIDE FORM)
+================================= */
+.sale-card {
+  background: #ffffff;
+  width: 100%;
+  max-width: 1000px;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+}
+
+/* ==============================
+   HEADINGS
+================================= */
+.sale-card h2 {
+  margin-top: 0;
+  margin-bottom: 25px;
+  color: #0f172a;
+  font-weight: 600;
+}
+
+/* ==============================
+   LABELS & INPUTS
+================================= */
+.sale-card label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #334155;
+  margin-top: 15px;
+  display: block;
+}
+
+.sale-card input,
+.sale-card select {
+  width: 100%;
+  padding: 10px 12px;
+  margin-top: 6px;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+  font-size: 14px;
+  transition: 0.2s;
+}
+
+.sale-card input:focus,
+.sale-card select:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37,99,235,0.15);
+}
+
+/* ==============================
+   ROW GRID (QUANTITY)
+================================= */
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-top: 10px;
+}
+
+/* ==============================
+   INFO GRID (Mill, HSN, Stock)
+================================= */
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin-top: 10px;
+  font-size: 13px;
+  background: #f8fafc;
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+}
+
+.info-grid span {
+  font-weight: 600;
+  color: #0f172a;
+}
+
+/* ==============================
+   DROPDOWN SEARCH
+================================= */
+.dropdown {
+  border: 1px solid #ddd;
+  background: white;
+  max-height: 150px;
+  overflow-y: auto;
+  border-radius: 6px;
+  margin-top: 5px;
+}
+
+.dropdown div {
+  padding: 8px;
+  cursor: pointer;
+}
+
+.dropdown div:hover {
+  background: #f1f5f9;
+}
+
+/* ==============================
+   AMOUNT BOX (FINAL DISPLAY)
+================================= */
+.amount-box {
+  margin-top: 25px;
+  background: #eff6ff;
+  padding: 18px;
+  border-radius: 10px;
+  border: 1px solid #bfdbfe;
+  font-size: 15px;
+  font-weight: 600;
+  color: #1e40af;
+}
+
+/* ==============================
+   BUTTON
+================================= */
+.sale-card button {
+  margin-top: 25px;
+  width: 100%;
+  padding: 12px;
+  background: #2563eb;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.sale-card button:hover {
+  background: #1d4ed8;
+}
+
+/* ==============================
+   WARNING STOCK DISPLAY
+================================= */
+.low-stock {
+  color: #dc2626;
+  font-weight: 600;
+}
+
+.available-stock {
+  color: #16a34a;
+  font-weight: 600;
+}
+
+/* ==============================
+   RESPONSIVE
+================================= */
+@media (max-width: 768px) {
+
+  .row,
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sale-card {
+    padding: 20px;
+  }
+}
+/* ===========================
+   SALE LAYOUT SIDE BY SIDE
+=========================== */
+
+.sale-container {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 25px;
+  align-items: start;
+  padding: 30px;
+}
+
+
+
+
+/* RIGHT SUMMARY */
+.sale-summary {
+  position: sticky;
+  top: 20px;
+}
+
+/* SUMMARY CARDS */
+.summary-card {
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.08);
+  margin-bottom: 20px;
+  text-align: center;
+  border-left: 6px solid #2563eb;
+}
+
+.summary-card label {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.summary-card h3 {
+  margin-top: 8px;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.summary-card.highlight {
+  border-left: 6px solid #16a34a;
+  background: #f0fdf4;
+}
+
+.summary-card.highlight h2 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #16a34a;
+}

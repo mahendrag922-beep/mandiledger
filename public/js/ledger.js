@@ -83,20 +83,24 @@ if (type === "mill") {
     totalCredit += credit;
 
     tbody.innerHTML += `
-      <tr>
-        <td>
-  ${new Date(l.created_at).toLocaleDateString()} 
-  ${new Date(l.created_at).toLocaleTimeString([], {
-    hour: '2-digit',
-    minute: '2-digit'
-  })}
-</td>
+  <tr>
+    <td>
+      ${new Date(l.created_at).toLocaleDateString()}
+      ${new Date(l.created_at).toLocaleTimeString([], {
+        hour: '2-digit',
+        minute: '2-digit'
+      })}
+    </td>
 
-        <td>${l.entry_type}</td>
-        <td>${debit ? "₹ " + debit.toFixed(2) : "-"}</td>
-        <td>${credit ? "₹ " + credit.toFixed(2) : "-"}</td>
-      </tr>
-    `;
+    <td>${l.voucher_no || "-"}</td>
+
+    <td>${l.entry_type}</td>
+
+    <td>${debit ? "₹ " + debit.toFixed(2) : "-"}</td>
+
+    <td>${credit ? "₹ " + credit.toFixed(2) : "-"}</td>
+  </tr>
+`;
   });
 
   let balance;

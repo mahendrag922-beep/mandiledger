@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Purchase</title>
+  <title>Purchase Entry</title>
   <link rel="stylesheet" href="css/purchase.css">
 </head>
 <body>
@@ -11,54 +11,125 @@
   <div class="nav-links">
     <a href="dashboard.html">Dashboard</a>
     <a href="parties.html">Parties</a>
-    <a href="purchase.html">Purchase</a>
+    <a href="brokers.html">Brokers</a>
+    <a href="transports.html">Transport</a>
     <a href="sale.html">Sale</a>
     <a href="ledger.html">Ledger</a>
     <a href="payments.html">Payments</a>
+    <a href="vouchers.html" class="active">Vouchers</a>
+    <a href="stock-report.html">Stock Report</a>
+    <a href="reports.html">Reports</a>
     <a href="#" onclick="logout()">Logout</a>
   </div>
 </nav>
+<div class="purchase-container">
 
-<div class="container">
+  <!-- LEFT FORM -->
+  <div class="purchase-form">
 
-  <div class="card">
     <h2>📥 Purchase Entry (Farmer)</h2>
 
-    <!-- PARTY -->
+    <!-- FARMER SEARCH -->
     <label>Farmer</label>
-    <select id="party_id">
-      <option value="">Select Farmer</option>
-    </select>
+    <input id="farmerSearch" placeholder="Search farmer by name">
+    <div id="farmerList" class="dropdown"></div>
 
-    <!-- COMMODITY -->
-    <label>Commodity</label>
-<select id="commodity">
-  <option value="">Select Commodity</option>
-  <option value="paddy">Paddy</option>
-  <option value="wheat">Wheat</option>
-</select>
+    <input type="hidden" id="party_id">
 
-    <!-- QUANTITY -->
     <div class="row">
-  <div>
-    <label>Quantity (Quintal)</label>
-    <input id="quintal" type="number" min="0" value="0" oninput="calculate()">
-  </div>
-  <div>
-    <label>Quantity (Kg)</label>
-    <input id="kg" type="number" min="0" value="0" oninput="calculate()">
-  </div>
-</div>
-
-<label>Rate (₹ per Quintal)</label>
-<input id="rate" type="number" min="0" oninput="calculate()">
-
-    <!-- AMOUNT -->
-    <div class="amount-box">
-      Total Amount: ₹ <span id="amount">0.00</span>
+      <div>
+        <label>Mobile</label>
+        <input id="farmer_mobile" disabled>
+      </div>
+      <div>
+        <label>Address</label>
+        <input id="farmer_address" disabled>
+      </div>
     </div>
 
-    <button onclick="savePurchase()">Save Purchase</button>
+    <!-- COMMODITY -->
+     <label>Commodity</label>
+<select id="commodity" onchange="selectCommodity(this.value)">
+  <option value="">Select Commodity</option>
+</select>
+
+    <!-- TRANSPORT -->
+    <div class="row">
+      <div>
+        <label>Vehicle No</label>
+        <input id="vehicle_no" placeholder="UP32 AB 1234">
+      </div>
+      <div>
+        <label>No of Bags</label>
+        <input id="bags" type="number" oninput="calculatePurchase()">
+      </div>
+    </div>
+
+    <!-- WEIGHT -->
+    <div class="row">
+      <div>
+        <label>Quintal</label>
+        <input id="quintal" type="number" oninput="calculatePurchase()">
+      </div>
+      <div>
+        <label>Kg</label>
+        <input id="kg" type="number" oninput="calculatePurchase()">
+      </div>
+    </div>
+
+    <!-- RATE & COMMISSION -->
+    <div class="row">
+      <div>
+        <label>Rate (₹ / Kg)</label>
+        <input id="rate" type="number" oninput="calculatePurchase()">
+      </div>
+      <div>
+        <label>Mandi Commission (%)</label>
+        <input id="commission" type="number" step="0.01" oninput="calculatePurchase()">
+      </div>
+    </div>
+
+    <button class="btn-save" onclick="savePurchase()">
+      💾 Save Purchase Voucher
+    </button>
+
+  </div>
+
+  <!-- RIGHT SUMMARY -->
+  <div class="purchase-summary">
+
+    <h3>📊 Calculation Summary</h3>
+
+    <div class="summary-card">
+      <span>Total Weight</span>
+      <b id="totalWeight">0 Kg</b>
+    </div>
+
+    <div class="summary-card">
+      <span>Wajan Dhalta</span>
+      <b id="dhalta">0 Kg</b>
+    </div>
+
+    <div class="summary-card highlight">
+      <span>Final Weight</span>
+      <b id="finalWeight">0 Kg</b>
+    </div>
+
+    <div class="summary-card">
+      <span>Gross Amount</span>
+      ₹ <b id="grossAmount">0</b>
+    </div>
+
+    <div class="summary-card">
+      <span>Commission</span>
+      ₹ <input id="discount" disabled>
+    </div>
+
+    <div class="summary-card highlight">
+      <span>Final Payable</span>
+      ₹ <b id="netAmount">0</b>
+    </div>
+
   </div>
 
 </div>

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Vouchers</title>
+  <link rel="stylesheet" href="css/vouchers.css">
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="logo">🌾 MandiLedger ERP</div>
+  <div class="nav-links">
+    <a href="dashboard.html">Dashboard</a>
+    <a href="parties.html">Parties</a>
+    <a href="brokers.html">Brokers</a>
+    <a href="transports.html">Transport</a>
+    <a href="purchase.html">Purchase</a>
+    <a href="sale.html">Sale</a>
+    <a href="ledger.html">Ledger</a>
+    <a href="payments.html">Payments</a>
+    <a href="stock-report.html">Stock Report</a>
+    <a href="reports.html">Reports</a>
+    <a href="#" onclick="logout()">Logout</a>
+  </div>
+</nav>
+
+<div class="container">
+
+  <!-- 🔢 VOUCHER TYPE CARDS -->
+  <div class="cards">
+    <div class="card blue" onclick="loadVouchers('purchase')">
+      <span>📥 Purchase</span>
+    </div>
+
+    <div class="card green" onclick="loadVouchers('sale')">
+      <span>📤 Sale</span>
+    </div>
+
+    <div class="card red" onclick="loadVouchers('payment')">
+      <span>💸 Payment</span>
+    </div>
+
+    <div class="card purple" onclick="loadVouchers('receipt')">
+      <span>💰 Receipt</span>
+    </div>
+  </div>
+
+  <!-- 📋 VOUCHER TABLE -->
+  <div class="table-box">
+    <h3 id="voucherTitle">Select voucher type</h3>
+
+    <table>
+      <thead id="voucherHead"></thead>
+      <tbody id="voucherBody">
+        <tr><td colspan="15">Select voucher type</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+<div id="editVoucherModal" class="edit-modal">
+  <div class="modal-box">
+
+    <div class="modal-header">
+      ✏️ Edit Purchase Voucher
+    </div>
+
+    <div class="modal-body">
+
+      <div class="edit-grid">
+        <div>
+          <label>Commodity</label>
+          <input id="editCommodity" readonly>
+        </div>
+
+        <div>
+          <label>Bags</label>
+          <input id="editBags" type="number" oninput="recalcEdit()">
+        </div>
+
+        <div>
+          <label>Quintal</label>
+          <input id="editQuintal" type="number" oninput="recalcEdit()">
+        </div>
+
+        <div>
+          <label>Kg</label>
+          <input id="editKg" type="number" oninput="recalcEdit()">
+        </div>
+
+        <div>
+          <label>Rate (₹/Kg)</label>
+          <input id="editRate" type="number" oninput="recalcEdit()">
+        </div>
+
+        <div>
+          <label>Commission %</label>
+          <input id="editCommission" type="number" step="0.01" oninput="recalcEdit()">
+        </div>
+
+        <div>
+          <label>Wajan Dhalta (Kg)</label>
+          <input id="editDhalta" disabled>
+        </div>
+      </div>
+
+      <div class="edit-summary">
+        <div class="summary-box">
+          Final Weight<br>
+          <span id="editFinalWeight">0</span> Kg
+        </div>
+
+        <div class="summary-box">
+          Commission Amount<br>
+          ₹ <span id="editCommissionAmount">0</span>
+        </div>
+
+        <div class="summary-box">
+          Final Amount<br>
+          ₹ <span id="editFinalAmount">0</span>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeEditModal()">Cancel</button>
+      <button class="btn-update" onclick="updateVoucher()">Update</button>
+    </div>
+
+  </div>
+</div>
+<div id="editSaleModal" class="edit-modal">
+  <div class="modal-box">
+    <div class="modal-header">✏️ Edit Sale Voucher</div>
+
+    <div class="modal-body">
+      <label>Weight (Kg)</label>
+      <input id="editSaleWeight">
+
+      <label>Rate (₹/Kg)</label>
+      <input id="editSaleRate">
+
+      <div class="summary-box">
+        Final Amount: ₹ <span id="editSaleAmount">0</span>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button onclick="closeEditSale()">Cancel</button>
+      <button onclick="updateSale()">Update</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/vouchers.js"></script>
+</body>
+</html>

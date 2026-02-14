@@ -125,7 +125,7 @@ async function loadLatestPurchases() {
       <tr>
         <td>${new Date(p.created_at).toLocaleTimeString()}</td>
         <td>${p.party}</td>
-        <td>₹ ${Number(p.total_amount).toFixed(2)}</td>
+        <td>₹ ${Number(p.final_amount).toFixed(2)}</td>
       </tr>
     `;
   });

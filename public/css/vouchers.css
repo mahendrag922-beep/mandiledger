@@ -1,0 +1,230 @@
+* {
+  box-sizing: border-box;
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+body {
+  margin: 0;
+  background: #f4f6f8;
+}
+
+/* NAVBAR */
+.navbar {
+  background: #0f172a;
+  color: white;
+  padding: 14px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.nav-links a {
+  color: #e5e7eb;
+  margin-left: 15px;
+  text-decoration: none;
+}
+
+.nav-links a:hover {
+  color: #fff;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+  margin-bottom: 20px;
+  padding: 20px;
+}
+
+.card {
+  padding: 20px;
+  border-radius: 10px;
+  color: white;
+  font-size: 18px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.blue { background: #2563eb; }
+.green { background: #16a34a; }
+.red { background: #dc2626; }
+.purple { background: #7c3aed; }
+
+.table-box {
+  background: white;
+  padding: 15px;
+  border-radius: 10px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 10px;
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 14px;
+}
+
+th {
+  background: #f1f5f9;
+}
+.btn-edit {
+  background: #2563eb;
+  color: white;
+  border: none;
+  padding: 5px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-reverse {
+  background: #dc2626;
+  color: white;
+  border: none;
+  padding: 5px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-left: 5px;
+}
+
+.reversed {
+  opacity: 0.6;
+}
+
+.muted {
+  color: #9ca3af;
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: none;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content.wide {
+  width: 420px;
+}
+
+/* animation */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* =========================
+   EDIT VOUCHER MODAL (WIDE)
+========================= */
+
+.edit-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.edit-modal .modal-box {
+  background: #fff;
+  width: 95%;
+  max-width: 1000px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+}
+
+/* HEADER */
+.modal-header {
+  padding: 14px 20px;
+  background: #0f172a;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+/* BODY SCROLL */
+.modal-body {
+  padding: 20px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+/* GRID LAYOUT */
+.edit-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+}
+
+.edit-grid label {
+  font-size: 13px;
+  color: #374151;
+}
+
+.edit-grid input,
+.edit-grid select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+}
+
+/* SUMMARY ROW */
+.edit-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.summary-box {
+  background: #f1f5f9;
+  padding: 12px;
+  border-radius: 8px;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* FOOTER */
+.modal-footer {
+  padding: 12px 20px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  border-top: 1px solid #e5e7eb;
+  background: #fff;
+}
+
+.modal-footer button {
+  padding: 10px 18px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-update {
+  background: #2563eb;
+  color: #fff;
+}
+
+.btn-cancel {
+  background: #e5e7eb;
+  color: #111;
+}

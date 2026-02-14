@@ -66,11 +66,12 @@ exports.todayPurchases = async (req, res, next) => {
     SELECT 
       p.created_at,
       pr.name AS party,
-      p.total_amount
-    FROM purchases p
+      p.final_amount
+    FROM voucher_purchase p
     JOIN parties pr ON pr.id = p.party_id
     WHERE p.created_at >= CURDATE()
       AND p.created_at < CURDATE() + INTERVAL 1 DAY
+      AND is_reversed =0
     ORDER BY p.created_at DESC
     LIMIT 10
   `);
@@ -84,10 +85,11 @@ exports.todaySales = async (req, res, next) => {
       s.created_at,
       pr.name AS party,
       s.total_amount
-    FROM sales s
+    FROM voucher_sale s
     JOIN parties pr ON pr.id = s.party_id
     WHERE s.created_at >= CURDATE()
       AND s.created_at < CURDATE() + INTERVAL 1 DAY
+      AND is_reversed =0
     ORDER BY s.created_at DESC
     LIMIT 10
   `);

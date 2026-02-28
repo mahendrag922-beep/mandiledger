@@ -26,21 +26,26 @@ exports.generateSaleVoucherNo = async (conn) => {
 exports.createSaleVoucher = async (data, conn) => {
   const [result] = await conn.query(
     `INSERT INTO voucher_sale
-     (voucher_no, party_id, party_name, gst_no, address, place_of_supply,
+     (voucher_no, party_id, party_name, gst_no,
+      billing_address, shipping_address,
+      place_of_supply,
+      bags,
       broker_id, broker_name, broker_company,
       transport_id, transport_name, driver_mobile, vehicle_no,
       commodity, hsn_no,
       total_weight_kg, final_weight_kg,
       rate_per_kg, total_amount, final_amount,
       created_by)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
       data.voucher_no,
       data.party_id,
       data.party_name,
       data.gst_no,
-      data.address,
+      data.billing_address,
+      data.shipping_address,
       data.place_of_supply,
+      data.bags,
       data.broker_id,
       data.broker_name,
       data.broker_company,
@@ -61,15 +66,22 @@ exports.createSaleVoucher = async (data, conn) => {
 
   return result.insertId;
 };
+
+
 exports.getSaleVouchers = async () => {
   const [rows] = await pool.query(
     "SELECT * FROM voucher_sale ORDER BY id DESC"
   );
   return rows;
 };
+
+
 exports.updateSaleVoucher = async (id, data, conn) => {
   await conn.query(
     `UPDATE voucher_sale SET
+      bags=?,
+      billing_address=?,
+      shipping_address=?,
       total_weight_kg=?,
       final_weight_kg=?,
       rate_per_kg=?,
@@ -78,6 +90,9 @@ exports.updateSaleVoucher = async (id, data, conn) => {
       modified_at=NOW()
      WHERE id=?`,
     [
+      data.bags,
+      data.billing_address,
+      data.shipping_address,
       data.total_weight_kg,
       data.final_weight_kg,
       data.rate_per_kg,

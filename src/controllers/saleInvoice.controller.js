@@ -94,15 +94,13 @@ function generateSaleInvoicePDF(voucher, mill) {
   doc.fontSize(9).text("Billed To:", startX + 5, boxTop + 5);
 
   doc.text(mill.name || "", startX + 5, boxTop + 20, { width: 210 });
-  doc.text(mill.address || "", startX + 5, boxTop + 35, { width: 210 });
-  doc.text(`${mill.district || ""}, ${mill.state || ""}`, startX + 5, boxTop + 95, { width: 210 });
-  doc.text(`GSTIN: ${mill.gstn || "-"}`, startX + 5, boxTop + 110);
+  doc.text(voucher.billing_address || "", startX + 5, boxTop + 45, { width: 210 });
+  doc.text(`GSTIN: ${mill.gstn || "-"}`, startX + 5, boxTop + 125);
 
   doc.text("Shipped To:", startX + 225, boxTop + 5);
   doc.text(mill.name || "", startX + 225, boxTop + 20, { width: 150 });
-  doc.text(mill.address || "", startX + 225, boxTop + 45, { width: 150 });
-  doc.text(`${mill.district || ""}, ${mill.state || ""}`, startX + 225, boxTop + 95, { width: 150 });
-  doc.text(`GSTIN: ${mill.gstn || "-"}`, startX + 225, boxTop + 110);
+  doc.text(voucher.shipping_address || "", startX + 225, boxTop + 55, { width: 150 });
+  doc.text(`GSTIN: ${mill.gstn || "-"}`, startX + 225, boxTop + 125);
 
   doc.text(`Invoice No: ${voucher.voucher_no}`, startX + 385, boxTop + 5);
   doc.text(`Invoice Date: ${new Date(voucher.created_at).toLocaleDateString()}`, startX + 385, boxTop + 20);
@@ -116,69 +114,142 @@ function generateSaleInvoicePDF(voucher, mill) {
 
   y += boxHeight;
 
-  /* ================= TABLE ================= */
+  /* ================= TABLE HEADER ================= */
 
-  const tableTop = y;
+const tableTop = y;
+const rowHeight = 25;
+const dataRowHeight = 150;
 
-  doc.rect(startX, tableTop, width, 25).fillAndStroke("#eeeeee", "#000");
+const colX = {
+  sno: startX,
+  desc: startX + 30,
+  unit: startX + 260,
+  hsn: startX + 300,
+  qty: startX + 350,
+  rate: startX + 410,
+  amt: startX + 470,
+  end: startX + width
+};
 
-  doc.fillColor("black");
-  doc.fontSize(9);
-  doc.text("SNo", startX + 5, tableTop + 7);
-  doc.text("Description of Goods", startX + 40, tableTop + 7);
-  doc.text("Unit", startX + 270, tableTop + 7);
-  doc.text("HSN", startX + 320, tableTop + 7);
-  doc.text("Qty", startX + 360, tableTop + 7);
-  doc.text("Rate", startX + 420, tableTop + 7);
-  doc.text("Amt After Tax", startX + 470, tableTop + 7);
+// Header Background
+doc.rect(startX, tableTop, width, rowHeight)
+   .fillAndStroke("#eeeeee", "#000");
 
-  const rowY = tableTop + 25;
-  const qty = Number(voucher.final_weight_kg) || 0;
-  const rate = Number(voucher.rate_per_kg) || 0;
-  const amount = Number(voucher.final_amount) || 0;
+doc.fillColor("black").fontSize(9);
 
-  doc.rect(startX, rowY, width, 60).stroke();
+doc.text("S.No", colX.sno + 5, tableTop + 7);
+doc.text("Description of Goods", colX.desc + 5, tableTop + 7);
+doc.text("Unit", colX.unit + 5, tableTop + 7);
+doc.text("HSN", colX.hsn + 5, tableTop + 7);
+doc.text("Qty", colX.qty + 5, tableTop + 7);
+doc.text("Rate", colX.rate + 5, tableTop + 7);
+doc.text("Amt After Tax", colX.amt + 5, tableTop + 7);
 
-  doc.text("1", startX + 5, rowY + 10);
-  doc.text(voucher.commodity || "-", startX + 40, rowY + 10, { width: 220 });
-  doc.text("KG", startX + 270, rowY + 10);
-  doc.text(voucher.hsn_no || "-", startX + 320, rowY + 10);
-  doc.text(qty.toFixed(2), startX + 360, rowY + 10);
-  doc.text(rate.toFixed(2), startX + 420, rowY + 10);
-  doc.text(amount.toFixed(2), startX + 470, rowY + 10);
+// Vertical Lines (Header)
+Object.values(colX).forEach(x => {
+  doc.moveTo(x, tableTop)
+     .lineTo(x, tableTop + rowHeight)
+     .stroke();
+});
 
-  y = rowY + 60;
+/* ================= DATA ROW ================= */
 
-  doc.rect(startX, y, width, 25).stroke();
-  doc.text("Total", startX + 420, y + 7);
-  doc.text(amount.toFixed(2), startX + 470, y + 7);
+const rowY = tableTop + rowHeight;
 
-  y += 25;
+doc.rect(startX, rowY, width, dataRowHeight)
+     .fillAndStroke("#f9f9f9", "#000");   // light grey background
 
-  const roundOff = Math.round(amount) - amount;
-  const finalAmount = amount + roundOff;
+doc.fillColor("black");  // Important reset
 
-  doc.rect(startX, y, width, 25).stroke();
-  doc.text("Round Off", startX + 420, y + 7);
-  doc.text(roundOff.toFixed(2), startX + 470, y + 7);
+// Vertical Lines (Data Row)
+Object.values(colX).forEach(x => {
+  doc.moveTo(x, rowY)
+     .lineTo(x, rowY + dataRowHeight)
+     .stroke();
+});
 
-  y += 25;
+const qty = Number(voucher.final_weight_kg) || 0;
+const rate = Number(voucher.rate_per_kg) || 0;
+const amount = Number(voucher.final_amount) || 0;
 
-  doc.rect(startX, y, width, 30).stroke();
-  doc.fontSize(11).text("Final Amount", startX + 380, y + 8);
-  doc.fontSize(11).text(finalAmount.toFixed(2), startX + 470, y + 8);
+doc.fontSize(9);
 
-  y += 30;
+doc.text("1", colX.sno + 5, rowY + 10);
+doc.text(voucher.commodity || "-", colX.desc + 5, rowY + 10, { width: 220 });
+doc.text("KG", colX.unit + 5, rowY + 10);
+doc.text(voucher.hsn_no || "-", colX.hsn + 5, rowY + 10);
+doc.text(qty.toFixed(2), colX.qty + 5, rowY + 10);
+doc.text(rate.toFixed(2), colX.rate + 5, rowY + 10);
+doc.text(amount.toFixed(2), colX.amt + 5, rowY + 10);
+
+y = rowY + dataRowHeight;
+
+/* ================= TOTAL ROW ================= */
+
+doc.rect(startX, y, width, 25).stroke();
+
+doc.fontSize(10);
+doc.text("Total", colX.rate + 5, y + 7);
+doc.text(amount.toFixed(2), colX.amt + 5, y + 7);
+
+y += 25;
+
+/* ================= ROUND OFF ROW ================= */
+
+const roundOff = Math.round(amount) - amount;
+
+doc.rect(startX, y, width, 25).stroke();
+doc.text("Round Off", colX.rate + 5, y + 7);
+doc.text(roundOff.toFixed(2), colX.amt + 5, y + 7);
+
+y += 25;
+
+/* ================= FINAL AMOUNT ROW ================= */
+
+const finalAmount = amount + roundOff;
+doc.lineWidth(2);
+doc.rect(startX, y, width , 30).stroke();
+doc.fontSize(12)
+   .font("Helvetica-Bold")
+   .text("Final Amount : ", colX.rate , y + 8);
+doc.fontSize(11).text(finalAmount.toFixed(2), colX.amt +25 , y +8 );
+doc.font("Helvetica"); // reset
+doc.lineWidth(1);
+
+y += 30;
+
+
 
   doc.rect(startX, y, width, 30).stroke();
   doc.fontSize(9).text("Amount in Words: Rupees " + numberToWords(Math.round(finalAmount)), startX + 5, y + 8);
 
   y += 30;
 
-  doc.rect(startX, y, width, 25).stroke();
-  doc.text("Bank: Union Bank Of India | A/C No: 663601010050161 | IFSC: UBIN0566365", startX + 5, y + 7);
+// Outer Box Only
+doc.rect(startX, y, width, 60).stroke();
 
-  y += 25;
+doc.fontSize(10).font("Helvetica-Bold");
+doc.text("Bank Details :", startX + 5, y + 7);
+
+doc.font("Helvetica").fontSize(9);
+
+// Bank 1
+doc.text(
+  "Union Bank Of India  |  A/C No: 663601010050161  |  IFSC: UBIN0566365",
+  startX + 5,
+  y + 22,
+  { width: width - 10 }
+);
+
+// Bank 2 (Below it – no line between)
+doc.text(
+  "State Bank Of India  |  A/C No: 43163293117  |  IFSC: SBIN0016463",
+  startX + 5,
+  y + 37,
+  { width: width - 10 }
+);
+
+y += 60;
 
   doc.rect(startX, y, width, 80).stroke();
   doc.moveTo(startX + 250, y).lineTo(startX + 250, y + 80).stroke();
@@ -204,31 +275,68 @@ exports.saveSaleInvoice = async (req, res, next) => {
   try {
     const { id } = req.params;
 
-    const [[voucher]] = await pool.query("SELECT * FROM voucher_sale WHERE id=?", [id]);
-    const [[mill]] = await pool.query("SELECT * FROM parties WHERE id=?", [voucher.party_id]);
+    const [[voucher]] = await pool.query(
+      "SELECT * FROM voucher_sale WHERE id=?",
+      [id]
+    );
+
+    if (!voucher) {
+      return res.status(404).json({
+        status: "fail",
+        message: "Voucher not found"
+      });
+    }
+
+    const [[mill]] = await pool.query(
+      "SELECT * FROM parties WHERE id=?",
+      [voucher.party_id]
+    );
+
+    if (!mill) {
+      return res.status(404).json({
+        status: "fail",
+        message: "Mill not found"
+      });
+    }
 
     const filePath = generateSaleInvoicePDF(voucher, mill);
 
     res.json({ status: "success", path: filePath });
 
   } catch (err) {
+    console.error("SALE PDF ERROR:", err);
     next(err);
   }
 };
-
 /* PRINT */
 exports.printSaleInvoice = async (req, res, next) => {
   try {
     const { id } = req.params;
 
-    const [[voucher]] = await pool.query("SELECT * FROM voucher_sale WHERE id=?", [id]);
-    const [[mill]] = await pool.query("SELECT * FROM parties WHERE id=?", [voucher.party_id]);
+    const [[voucher]] = await pool.query(
+      "SELECT * FROM voucher_sale WHERE id=?",
+      [id]
+    );
+
+    if (!voucher) {
+      return res.status(404).send("Voucher not found");
+    }
+
+    const [[mill]] = await pool.query(
+      "SELECT * FROM parties WHERE id=?",
+      [voucher.party_id]
+    );
+
+    if (!mill) {
+      return res.status(404).send("Mill not found");
+    }
 
     const filePath = generateSaleInvoicePDF(voucher, mill);
 
     res.sendFile(filePath);
 
   } catch (err) {
+    console.error("SALE PRINT ERROR:", err);
     next(err);
   }
 };

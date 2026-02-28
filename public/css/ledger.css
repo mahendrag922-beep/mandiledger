@@ -30,15 +30,16 @@ body {
 
 /* SEARCH */
 .search-section {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
   gap: 20px;
 }
 
 .search-card {
+  flex:1;
+
   background: white;
   padding: 15px;
-  border-radius: 10px;
+  border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
 

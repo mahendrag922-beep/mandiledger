@@ -207,7 +207,33 @@ document.querySelectorAll(".vehicle-row").forEach(row => {
   resetTransportForm();
  
   
-await loadTransports();
+// If sale page transport dropdown exists
+if (document.getElementById("transportSelect")) {
+
+  const saleRes = await api("/transports");
+  const saleData = await saleRes.json();
+  const list = saleData.data || [];
+
+  const select = document.getElementById("transportSelect");
+  select.innerHTML = `<option value="">Select Transport</option>`;
+
+  list.forEach(t => {
+    const opt = document.createElement("option");
+    opt.value = t.id;
+    opt.textContent = t.company_name;
+    select.appendChild(opt);
+  });
+
+  // 🔥 Auto select newly added transport
+  const newTransport = list[list.length - 1];
+  select.value = newTransport.id;
+
+  // Trigger load
+  if (typeof selectTransport === "function") {
+    selectTransport(newTransport.id);
+  }
+}
+
 alert("Transport added successfully");
 }
 
@@ -418,4 +444,6 @@ async function deleteTransport(id) {
   loadTransports();
 }
 
-loadTransports();
+if (document.getElementById("transportCards")) {
+  loadTransports();
+}

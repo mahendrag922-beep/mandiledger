@@ -3,6 +3,7 @@ const pool = require("../config/db");
 exports.addLedgerEntry = async ({
   partyId,
   voucherNo,
+  receiptNo,
   referenceType,
   entryType,
   debit = 0,
@@ -13,9 +14,9 @@ exports.addLedgerEntry = async ({
 
   await conn.query(
     `INSERT INTO ledger_entries
-     (party_id, voucher_no, reference_type, entry_type, debit, credit, reference_id)
-     VALUES (?, ?, ?, ?, ?, ?, ?)`,
-    [partyId, voucherNo, referenceType, entryType, debit, credit, referenceId]
+     (party_id, voucher_no, receiptNo,reference_type, entry_type, debit, credit, reference_id)
+     VALUES (?, ?, ?, ?, ?, ?,?, ?)`,
+    [partyId, voucherNo, receiptNo,referenceType, entryType, debit, credit, referenceId]
   );
 
   // Recalculate balance

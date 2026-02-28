@@ -3,143 +3,272 @@ const fs = require("fs");
 const path = require("path");
 const os = require("os");
 const pool = require("../config/db");
+/* ================= AMOUNT TO WORDS ================= */
+
+function numberToWords(num) {
+  const a = [
+    "", "One","Two","Three","Four","Five","Six","Seven","Eight","Nine","Ten",
+    "Eleven","Twelve","Thirteen","Fourteen","Fifteen","Sixteen","Seventeen",
+    "Eighteen","Nineteen"
+  ];
+  const b = ["", "", "Twenty","Thirty","Forty","Fifty","Sixty","Seventy","Eighty","Ninety"];
+
+  if ((num = num.toString()).length > 9) return "Overflow";
+
+  const n = ("000000000" + num).substr(-9).match(/.{1,2}/g);
+  let str = "";
+
+  str += (n[0] != 0) ? (a[Number(n[0])] || b[n[0][0]] + " " + a[n[0][1]]) + " Crore " : "";
+  str += (n[1] != 0) ? (a[Number(n[1])] || b[n[1][0]] + " " + a[n[1][1]]) + " Lakh " : "";
+  str += (n[2] != 0) ? (a[Number(n[2])] || b[n[2][0]] + " " + a[n[2][1]]) + " Thousand " : "";
+  str += (n[3] != 0) ? (a[Number(n[3])] || b[n[3][0]] + " " + a[n[3][1]]) + " Hundred " : "";
+  str += (n[4] != 0) ? ((str != "") ? "and " : "") +
+    (a[Number(n[4])] || b[n[4][0]] + " " + a[n[4][1]]) + " " : "";
+
+  return str.trim() + " Only";
+}
+
+/* ================= MAIN PDF FUNCTION ================= */
+
 
 
 function generateSlipPDF(voucher, saveToDesktop = false) {
+
   const desktopPath = path.join(os.homedir(), "Desktop");
-    const farmerFolder = path.join(
-      desktopPath,
-      "Purchase",
-      voucher.party_name.replace(/[^a-zA-Z0-9]/g, "_")
-    );
+  const folder = path.join(desktopPath, "Purchase", voucher.party_name.replace(/[^a-zA-Z0-9]/g, "_"));
+  if (!fs.existsSync(folder)) fs.mkdirSync(folder, { recursive: true });
 
-    if (!fs.existsSync(farmerFolder)) {
-      fs.mkdirSync(farmerFolder, { recursive: true });
-    }
+  const filePath = path.join(folder, `${voucher.voucher_no}.pdf`);
 
-    const filePath = path.join(
-      farmerFolder,
-      `${voucher.voucher_no}.pdf`
-    );
+  const doc = new PDFDocument({ size: "A4", margin: 20 });
+  doc.pipe(fs.createWriteStream(filePath));
 
-    const doc = new PDFDocument({
-      size: "A4",
-      margin: 40
-    });
+  const pageWidth = 555;
+  const startX = 20;
+  let y = 20;
 
-    doc.pipe(fs.createWriteStream(filePath));
+  /* OUTER BORDER */
+  doc.rect(startX, y, pageWidth, 800).stroke();
 
-    const logoPath = path.join(__dirname, "../assets/yes.png");
-    console.log("Logo Path:", logoPath);
+  /* ================= HEADER ================= */
 
-    /* =============================
-       HEADER SECTION
-    ==============================*/
+  const logoPath = path.join(__dirname, "../assets/yes.png");
+  if (fs.existsSync(logoPath)) {
+    doc.image(logoPath, startX + 10, y + 5, { width: 60 });
+  }
 
-    // Logo
-    if (fs.existsSync(logoPath)) {
-      doc.image(logoPath, 40, 40, { width: 70 });
-    }
+  doc.fontSize(16).text("M/S VAISHNAVI ENTERPRISES", 120, y + 10);
+  doc.fontSize(9)
+    .text("King Nagar Karari", 120, y + 30)
+    .text("Kaushambi Uttar Pradesh 212206", 120, y + 45);
 
-    // Company Name
-    doc
-      .fontSize(18)
-      .text("Gupta Mandi Traders", 130, 45);
+  doc.text("Mobile: 9839142549", 420, y + 10)
+    .text("7007820697", 420, y + 25)
+    .text("Email: yes.karari@gmail.com", 420, y + 40);
 
-    doc
-      .fontSize(10)
-      .text("Main Mandi Road, Lucknow", 130, 70)
-      .text("Mobile: 9876543210", 130, 85)
-      .text("GSTIN: 09ABCDE1234F1Z5", 130, 100);
+  y += 80;
+  doc.moveTo(startX, y).lineTo(startX + pageWidth, y).stroke();
 
-    // Invoice Info Right
-    doc
-      .fontSize(12)
-      .text(`Invoice No: ${voucher.voucher_no}`, 380, 50)
-      .text(
-        `Date: ${new Date(voucher.created_at).toLocaleDateString()}`,
-        380,
-        70
-      );
+  /* ================= WATERMARK ================= */
 
-    doc.moveTo(40, 130).lineTo(555, 130).stroke();
+  
+  if (voucher.is_reversed) {
+  doc.save();
+  doc.rotate(45, { origin: [300, 400] })
+    .fontSize(70)
+    .fillColor("gray")
+    .opacity(0.15)
+    .text("REVERSED", 150, 350);
+  doc.restore();
+  doc.opacity(1).fillColor("black");
+}else{
+doc.save();
+  doc.rotate(45, { origin: [300, 400] })
+    .fontSize(70)
+    .fillColor("red")
+    .opacity(0.08)
+    .text("NOT PAID", 150, 300);
+  doc.restore();
+  doc.opacity(1).fillColor("black");
 
-    /* =============================
-       WATERMARK
-    ==============================*/
+}
 
-    doc.save();
-    doc.fontSize(60)
-       .fillColor("grey")
-       .opacity(0.07)
-       .rotate(45, { origin: [300, 400] })
-       .text("GUPTA MANDI TRADERS", 100, 350);
-    doc.restore();
+  /* ================= ROW 1 ================= */
 
-    doc.opacity(1).fillColor("black");
+doc.fontSize(11);
+doc.text(`Party Name : ${voucher.party_name}`, 30, y + 10);
+doc.text(`Invoice No : ${voucher.voucher_no}`, 270, y + 10);
+doc.text(`Invoice Date : ${new Date(voucher.created_at).toLocaleDateString()}`, 430, y + 10);
 
-    /* =============================
-       FARMER DETAILS
-    ==============================*/
+y += 30;
+doc.moveTo(20, y).lineTo(575, y).stroke();
 
-    doc.fontSize(12)
-       .text(`Farmer Name: ${voucher.party_name}`, 40, 150)
-       .text(`Mobile: ${voucher.mobile || "-"}`, 40, 170)
-       .text(`Vehicle No: ${voucher.vehicle_no || "-"}`, 40, 190);
+/* ================= ROW 2 ================= */
 
-    /* =============================
-       TABLE SECTION
-    ==============================*/
+doc.text(`No. of Bags : ${voucher.total_bags}`, 30, y + 10);
+doc.text(`Vehicle No : ${voucher.vehicle_no}`, 270, y + 10);
+//doc.text(`Vehicle No : ${voucher.vehicle_no || "-"}`, 430, y + 10);
 
-    const tableTop = 230;
-    const col1 = 50;
-    const col2 = 300;
+y += 30;
+doc.moveTo(20, y).lineTo(575, y).stroke();
 
-    // Outer Border
-    doc.rect(40, tableTop - 20, 515, 220).stroke();
+/* ================= MAIN TABLE ================= */
 
-    doc.fontSize(12).text("Particular", col1, tableTop - 5);
-    doc.text("Value", col2, tableTop - 5);
+const tableTop = y;
+const rowHeight = 25;
+const dataRowHeight = 120;
+const width = 555;
 
-    doc.moveTo(40, tableTop + 10)
-       .lineTo(555, tableTop + 10)
+// Column positions (balanced properly)
+const colX = {
+  sno: startX,
+  commodity: startX + 35,
+  unit: startX + 120,
+  hsn: startX + 155,
+  actual: startX + 195,
+  finalWt: startX + 245,
+  dhalta: startX + 295,
+  commission: startX + 345,
+  totalAmt: startX + 405,
+  finalAmt: startX + 470,
+  end: startX + width
+};
+
+/* HEADER ROW */
+
+doc.rect(startX, tableTop, width, rowHeight)
+   .fillAndStroke("#eeeeee", "#000");
+
+doc.fillColor("black").fontSize(8);
+
+doc.text("S.No", colX.sno + 5, tableTop + 8);
+doc.text("Commodity", colX.commodity + 5, tableTop + 8);
+doc.text("Unit", colX.unit + 5, tableTop + 8);
+doc.text("HSN", colX.hsn + 5, tableTop + 8);
+doc.text("Actual Wt", colX.actual + 5, tableTop + 8);
+doc.text("Final Wt", colX.finalWt + 5, tableTop + 8);
+doc.text("Dhalta", colX.dhalta + 5, tableTop + 8);
+doc.text("Commission", colX.commission + 5, tableTop + 8);
+doc.text("Total Amt", colX.totalAmt + 5, tableTop + 8);
+doc.text("Final Amt", colX.finalAmt + 5, tableTop + 8);
+
+// Vertical lines
+Object.values(colX).forEach(x => {
+  doc.moveTo(x, tableTop)
+     .lineTo(x, tableTop + rowHeight)
+     .stroke();
+});
+
+/* DATA ROW */
+
+let rowY = tableTop + rowHeight;
+const items = voucher.items || [];
+
+doc.fontSize(9);
+
+items.forEach((item, index) => {
+
+  doc.rect(startX, rowY, width, 25).stroke();
+
+  Object.values(colX).forEach(x => {
+    doc.moveTo(x, rowY)
+       .lineTo(x, rowY + 25)
        .stroke();
+  });
 
-    let y = tableTop + 25;
+  doc.text(index + 1, colX.sno + 5, rowY + 8);
+  doc.text(item.commodity || "-", colX.commodity + 5, rowY + 8);
+  doc.text("KG", colX.unit + 5, rowY + 8);
+  doc.text(item.hsn_no || "-", colX.hsn + 5, rowY + 8);
+  doc.text(Number(item.total_weight_kg).toFixed(2), colX.actual + 5, rowY + 8);
+  doc.text(Number(item.final_weight_kg).toFixed(2), colX.finalWt + 5, rowY + 8);
+  doc.text(Number(item.wajan_dhalta_kg).toFixed(2), colX.dhalta + 5, rowY + 8);
+  doc.text(Number(item.commission_amount).toFixed(2), colX.commission + 5, rowY + 8);
+  doc.text(Number(item.total_amount).toFixed(2), colX.totalAmt + 5, rowY + 8);
+  doc.text(Number(item.final_amount).toFixed(2), colX.finalAmt + 5, rowY + 8);
 
-    const rows = [
-      ["Commodity", voucher.commodity],
-      ["Bags", voucher.bags],
-      ["Total Weight (Kg)", voucher.total_weight_kg],
-      ["Wajan Dhalta (Kg)", voucher.wajan_dhalta_kg],
-      ["Final Weight (Kg)", voucher.final_weight_kg],
-      ["Rate (₹/Kg)", voucher.rate_per_kg],
-      ["Total Amount", `₹ ${voucher.total_amount}`],
-      ["Commission (%)", voucher.commission_percent],
-      ["Commission Amount", `₹ ${voucher.commission_amount}`],
-      ["Final Amount", `₹ ${voucher.final_amount}`]
-    ];
+  rowY += 25;
+});
 
-    rows.forEach(row => {
-      doc.text(row[0], col1, y);
-      doc.text(String(row[1]), col2, y);
-      y += 20;
-    });
+y = rowY + dataRowHeight;
+/* ================= TOTAL ROW (ALIGNED CORRECTLY) ================= */
 
-    /* =============================
-       SIGNATURE SECTION
-    ==============================*/
+const totalFinalWt = Number(voucher.total_final_weight_kg) || 0;
+const totalCommission = Number(voucher.total_commission) || 0;
+const totalFinalAmount = Number(voucher.total_final_amount) || 0;
 
-    doc.moveTo(40, 700).lineTo(200, 700).stroke();
-    doc.text("Farmer Signature", 40, 705);
 
-    doc.moveTo(380, 700).lineTo(540, 700).stroke();
-    doc.text("Authorized Signatory", 380, 705);
+doc.rect(startX, y, width, 30)
+   .fillAndStroke("#eeeeee", "#000");
 
-    doc.end();
+doc.fillColor("black").fontSize(10).font("Helvetica-Bold");
 
+doc.text("Total", colX.commodity + 5, y + 8);
+
+// Under Final Weight column
+doc.text(totalFinalWt.toFixed(2), colX.finalWt + 5, y + 8);
+
+// Under Commission column
+doc.text(totalCommission.toFixed(2), colX.commission + 5, y + 8);
+
+// Under Final Amount column
+doc.text(totalFinalAmount.toFixed(2), colX.finalAmt + 5, y + 8);
+
+doc.fillColor("black").font("Helvetica");
+
+y += 30;
+
+/* ================= AMOUNT IN WORDS + ROUND OFF ================= */
+
+const roundOff = Math.round(totalFinalAmount) - totalFinalAmount;
+const finalAmount = totalFinalAmount + roundOff;
+
+doc.rect(startX, y, width, 40).stroke();
+
+// Vertical split (like image)
+doc.moveTo(startX + 380, y)
+   .lineTo(startX + 380, y + 40)
+   .stroke();
+
+doc.fontSize(10);
+
+doc.text(
+  "Amount in Words: ₹ " + numberToWords(parseInt(finalAmount)) + " Only",
+  startX + 10,
+  y + 12,
+  { width: 360 }
+);
+
+doc.text("Round Off:", startX + 390, y + 5);
+doc.text(roundOff.toFixed(2), startX + 470, y + 5);
+
+doc.font("Helvetica-Bold").fontSize(16);
+doc.text("Amount:", startX + 390, y + 20);
+doc.text(finalAmount.toFixed(2), startX + 470, y + 20);
+
+doc.font("Helvetica");
+
+y += 40;
+
+  /* ================= FOOTER ================= */
+
+  let footerY = 760;
+
+  doc.moveTo(20, footerY).lineTo(575, footerY).stroke();
+
+  doc.moveTo(190, footerY).lineTo(190, 820).stroke();
+  doc.moveTo(380, footerY).lineTo(380, 820).stroke();
+
+  doc.fontSize(10)
+    .text("Terms & Conditions:\nGoods once sold will not be taken back.", 25, footerY + 5);
+
+  doc.text("Customer Signature", 210, footerY + 25);
+  doc.text("Authorized Signature", 410, footerY + 25);
+
+  doc.end();
   return filePath;
 }
+
 exports.printPurchaseSlip = async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -153,9 +282,20 @@ exports.printPurchaseSlip = async (req, res, next) => {
       return res.status(404).json({ message: "Voucher not found" });
     }
 
-    const filePath = generateSlipPDF(voucher, true);
+    // ✅ ALWAYS fetch items from voucher_purchase_items
+    const [items] = await pool.query(
+      `SELECT commodity, hsn_no, bags,
+              total_weight_kg, wajan_dhalta_kg,
+              final_weight_kg, rate_per_kg,
+              total_amount, commission_amount, final_amount
+       FROM voucher_purchase_items
+       WHERE voucher_id = ?`,
+      [id]
+    );
 
-    // 🔥 SEND FILE TO BROWSER
+    voucher.items = items;   // attach items
+
+    const filePath = generateSlipPDF(voucher, true);
     res.sendFile(filePath);
 
   } catch (err) {
@@ -166,21 +306,32 @@ exports.savePurchaseSlip = async (req, res, next) => {
   try {
     const { id } = req.params;
 
-
     const [[voucher]] = await pool.query(
       "SELECT * FROM voucher_purchase WHERE id = ?",
       [id]
     );
 
     if (!voucher) {
-      return res.status(404).json({
-        status: "fail",
-        message: "Voucher not found"
-      });
+      return res.status(404).json({ message: "Voucher not found" });
     }
 
-    const filePath = generateSlipPDF(voucher, true);
+    // ✅ ALWAYS fetch items from voucher_purchase_items
+    const [items] = await pool.query(
+      `SELECT commodity, hsn_no, bags,
+              total_weight_kg, wajan_dhalta_kg,
+              final_weight_kg, rate_per_kg,
+              total_amount, commission_amount, final_amount
+       FROM voucher_purchase_items
+       WHERE voucher_id = ?`,
+      [id]
+    );
 
+    voucher.items = items;   // attach items
+
+    const filePath = generateSlipPDF(voucher, true);
+    res.sendFile(filePath);
+
+  
     if (!filePath) {
       return res.status(500).json({
         status: "fail",

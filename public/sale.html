@@ -1,130 +1,257 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <title>Sale</title>
   <link rel="stylesheet" href="css/sale.css">
 </head>
+
 <body>
 
-<nav class="navbar">
-  <div class="logo">🌾 MandiLedger ERP</div>
-  <div class="nav-links">
-    <a href="dashboard.html">Dashboard</a>
-    <a href="parties.html">Parties</a>
-    <a href="brokers.html">Brokers</a>
-    <a href="transports.html">Transport</a>
-    <a href="purchase.html">Purchase</a>
-    <a href="ledger.html">Ledger</a>
-    <a href="payments.html">Payments</a>
-    <a href="vouchers.html" class="active">Vouchers</a>
-    <a href="stock-report.html">Stock Report</a>
-    <a href="reports.html">Reports</a>
-    <a href="#" onclick="logout()">Logout</a>
-  </div>
-</nav>
-
-<div class="sale-container">
-
-  <!-- LEFT SIDE FORM -->
-  <div class="sale-card">
-
-    <h2>📤 Sale Entry (Mill)</h2>
-
-    <label>Mill Name</label>
-    <input id="millSearch" placeholder="Search Mill">
-    <div id="millList" class="dropdown"></div>
-
-    <div class="info-grid">
-      <div>GST No: <span id="millGst">-</span></div>
-      <div>Place of Supply: <span id="millState">-</span></div>
+  <nav class="navbar">
+    <div class="logo">🌾 MandiLedger ERP</div>
+    <div class="nav-links">
+      <a href="dashboard.html">Dashboard</a>
+      <a href="parties.html">Parties</a>
+      <a href="brokers.html">Brokers</a>
+      <a href="transports.html">Transport</a>
+      <a href="purchase.html">Purchase</a>
+      <a href="ledger.html">Ledger</a>
+      <a href="payments.html">Payments</a>
+      <a href="vouchers.html" class="active">Vouchers</a>
+      <a href="stock-report.html">Stock Report</a>
+      <a href="reports.html">Reports</a>
+      <a href="#" onclick="logout()">Logout</a>
     </div>
+  </nav>
 
-    <label>Commodity</label>
-<select id="commoditySelect" onchange="selectCommodity(this.value)">
-  <option value="">Select Commodity</option>
-</select>
+  <div class="sale-container">
 
-<div class="info-grid">
-  <div>HSN: <span id="hsnDisplay">-</span></div>
-  <div>Available: <span id="availableStockKg">0 Kg</span></div>
-</div>
+    <!-- LEFT SIDE FORM -->
+    <div class="sale-card">
 
-    <label>Broker</label>
-<select id="brokerSelect" onchange="selectBroker(this.value)">
-  <option value="">Select Broker</option>
-</select>
+      <h2>📤 Sale Entry</h2>
 
-<div class="info-grid">
-  <div>Referred By: <span id="brokerCompany">-</span></div>
-  <div>Primary Mobile: <span id="brokerMobile">-</span></div>
-</div>
+      <!-- STEP BUTTONS -->
+      <div class="sale-steps">
 
-    <label>Transport Company</label>
-<select id="transportSelect" onchange="selectTransport(this.value)">
-  <option value="">Select Transport</option>
-</select>
-
-<div class="info-grid">
-  <div>Driver</div>
-  <div>
-    <select id="driverSelect" onchange="selectDriver(this.value)">
-      <option value="">Select Driver</option>
-    </select>
-    <button type="button" class="mini-btn" onclick="openAddDriver()">+ Add Driver</button>
+  <div class="voucher-card active" onclick="openStep(1)">
+    <div class="icon">🏭</div>
+    <div class="title">Mill Details</div>
   </div>
+
+  <div class="voucher-card" onclick="openStep(2)">
+    <div class="icon">🌾</div>
+    <div class="title">Commodity</div>
+  </div>
+
+  <div class="voucher-card" onclick="openStep(3)">
+    <div class="icon">🤝</div>
+    <div class="title">Broker</div>
+  </div>
+
+  <div class="voucher-card" onclick="openStep(4)">
+    <div class="icon">🚛</div>
+    <div class="title">Transport</div>
+  </div>
+
+  <div class="voucher-card save" onclick="openStep(5)">
+    <div class="icon">💾</div>
+    <div class="title">Save</div>
+  </div>
+
 </div>
+      <!-- ================= STEP 1 ================= -->
+      <div class="sale-step-content" id="step-1">
 
-<div class="info-grid">
-  <div>Driver Mobile:</div>
-  <div><span id="driverMobile">-</span></div>
-</div>
+        <label>Mill Name</label>
+        <input id="millSearch" placeholder="Search Mill">
+        <div id="millList" class="dropdown"></div>
 
-<label>Vehicle No</label>
-<select id="vehicleSelect">
-  <option value="">Select Vehicle</option>
-</select>
+        <div class="info-grid">
+          <div>GST No: <span id="millGst">-</span></div>
+          <div>Place of Supply: <span id="millState">-</span></div>
+        </div>
 
-    <div class="row">
-      <div>
-        <label>Quintal</label>
-        <input id="saleQtl" type="number" oninput="calculateSale()">
+        <div class="address-section">
+          <label>Billing Address</label>
+          <textarea id="billingAddress" class="wide-textarea" rows="3"></textarea>
+
+          <div class="checkbox-row">
+            <input type="checkbox" id="sameAsBilling">
+            <label for="sameAsBilling">Shipping same as Billing</label>
+          </div>
+
+          <label>Shipping Address</label>
+          <textarea id="shippingAddress" class="wide-textarea" rows="3"></textarea>
+        </div>
+
       </div>
-      <div>
-        <label>Kg</label>
-        <input id="saleKg" type="number" oninput="calculateSale()">
+
+      <!-- ================= STEP 2 ================= -->
+      <div class="sale-step-content" id="step-2" style="display:none;">
+
+        <label>Commodity</label>
+        <select id="commoditySelect" onchange="selectCommodity(this.value)">
+          <option value="">Select Commodity</option>
+        </select>
+
+        <div class="info-grid">
+          <div>HSN: <span id="hsnDisplay">-</span></div>
+          <div>Available: <span id="availableStockKg">0 Kg</span></div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label>Quintal</label>
+            <input id="saleQtl" type="number" oninput="calculateSale()">
+          </div>
+          <div>
+            <label>Kg</label>
+            <input id="saleKg" type="number" oninput="calculateSale()">
+          </div>
+          <div>
+            <label>Rate (₹/Kg)</label>
+            <input id="saleRate" type="number" oninput="calculateSale()">
+          </div>
+          <div>
+            <label>No of Bags</label>
+            <input id="saleBags" type="number">
+          </div>
+        </div>
+
       </div>
+
+      <!-- ================= STEP 3 ================= -->
+      <div class="sale-step-content" id="step-3" style="display:none;">
+
+        <label>Broker</label>
+        <select id="brokerSelect" onchange="selectBroker(this.value)">
+          <option value="">Select Broker</option>
+        </select>
+
+        <div class="info-grid">
+          <div>Referred By: <span id="brokerCompany">-</span></div>
+          <div>Primary Mobile: <span id="brokerMobile">-</span></div>
+        </div>
+
+      </div>
+
+      <!-- ================= STEP 4 ================= -->
+      <div class="sale-step-content" id="step-4" style="display:none;">
+
+        <h4>🚛 Transport Details</h4>
+
+        <label>Transport Company</label>
+        <select id="transportSelect">
+          <option value="">Select Transport</option>
+        </select>
+
+        <div class="row">
+          <div>
+            <label>Driver Name</label>
+            <input type="text" id="driverName">
+          </div>
+          <div>
+            <label>Driver Mobile</label>
+            <input type="text" id="driverMobile">
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label>Vehicle No</label>
+            <input type="text" id="vehicleNo">
+          </div>
+        </div>
+
+        <h4>🚛 Freight Details</h4>
+
+        <div class="row">
+          <div>
+            <label>Bilty No</label>
+            <input type="text" id="biltyNo">
+          </div>
+          <div>
+            <label>Rate Per Quintal (₹)</label>
+            <input type="number" id="freightRate" oninput="calculateFreight()">
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label>Total Freight (₹)</label>
+            <input type="number" id="freightTotal" readonly>
+          </div>
+          <div>
+            <label>Advance Paid (₹)</label>
+            <input type="number" id="freightAdvance" oninput="calculateFreight()">
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label>Remaining Amount (₹)</label>
+            <input type="number" id="freightRemaining" readonly>
+          </div>
+        </div>
+
+        <label>Remark</label>
+        <textarea id="freightRemark" rows="2"></textarea>
+
+        <label>Freight Payment Type</label>
+        <select id="freightPaymentType" onchange="loadFreightSources()">
+          <option value="">Select</option>
+          <option value="cash">Cash</option>
+          <option value="bank">Bank</option>
+        </select>
+
+        <div id="freightCashSection" style="display:none;">
+          <label>Select Cash ID</label>
+          <select id="freightCashSelect"></select>
+        </div>
+
+        <div id="freightBankSection" style="display:none;">
+          <label>Select Bank</label>
+          <select id="freightBankSelect" onchange="loadFreightBankEntries()"></select>
+
+          <label>Select Bank Entry</label>
+          <select id="freightBankEntry"></select>
+        </div>
+
+      </div>
+
+      <!-- ================= STEP 5 ================= -->
+      <div class="sale-step-content" id="step-5" style="display:none;">
+        <button onclick="saveSale()">💾 Save Sale Voucher</button>
+      </div>
+
     </div>
 
-    <label>Rate (₹/Kg)</label>
-    <input id="saleRate" type="number" oninput="calculateSale()">
+    <!-- RIGHT SIDE SUMMARY (UNCHANGED) -->
+    <div class="sale-summary">
 
-    <button onclick="saveSale()">💾 Save Sale Voucher</button>
+      <div class="summary-card">
+        <label>Available Stock (Kg)</label>
+        <h3 id="availableStockKg1">0 Kg</h3>
+      </div>
+
+      <div class="summary-card">
+        <label>Total Weight (Kg)</label>
+        <h3 id="saleFinalWeight">0 Kg</h3>
+      </div>
+
+      <div class="summary-card highlight">
+        <label>Final Amount (₹)</label>
+        <h2 id="saleFinalAmount">0.00</h2>
+      </div>
+
+    </div>
 
   </div>
 
-  <!-- RIGHT SIDE SUMMARY -->
-  <div class="sale-summary">
+  <script src="js/api.js"></script>
+  <script src="js/sale.js"></script>
 
-    <div class="summary-card">
-      <label>Available Stock (Kg)</label>
-      <h3 id="availableStockKg1">0 Kg</h3>
-    </div>
-
-    <div class="summary-card">
-      <label>Total Weight (Kg)</label>
-      <h3 id="saleFinalWeight">0 Kg</h3>
-    </div>
-
-    <div class="summary-card highlight">
-      <label>Final Amount (₹)</label>
-      <h2 id="saleFinalAmount">0.00</h2>
-    </div>
-
-  </div>
-
-</div>
-
-<script src="js/api.js"></script>
-<script src="js/sale.js"></script>
 </body>
 </html>

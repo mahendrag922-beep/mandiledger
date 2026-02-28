@@ -43,6 +43,14 @@
       <button onclick="loadLedger('mill')">View Ledger</button>
     </div>
 
+    <div class="search-card">
+  <h3>🚛 Transport Ledger</h3>
+  <select id="transportSelect">
+    <option value="">Select Transport</option>
+  </select>
+  <button onclick="loadLedger('transport')">View Ledger</button>
+</div>
+
   </div>
 
   <!-- LEDGER DISPLAY -->
@@ -66,6 +74,7 @@
   <tr>
     <th>Date & Time</th>
     <th>Voucher No</th>
+    <th>Payment No</th>
     <th>Particular</th>
     <th id="thDebit">Debit</th>
     <th id="thCredit">Credit</th>

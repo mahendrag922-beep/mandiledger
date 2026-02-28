@@ -1,36 +1,5 @@
 const pool = require("../config/db");
 
-exports.createPurchaseVoucher = async (data, conn = pool) => {
-  const [result] = await conn.query(
-    `INSERT INTO voucher_purchase
-     (voucher_no,party_id, party_name, mobile, commodity, bags, vehicle_no,
-      total_weight_kg, wajan_dhalta_kg, final_weight_kg,
-      rate_per_kg, total_amount, commission_percent,
-      commission_amount, final_amount, created_by)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)`,
-    [
-      data.voucher_no,
-      data.party_id,
-      data.party_name,
-      data.mobile,
-      data.commodity,
-      data.bags,
-      data.vehicle_no,
-      data.total_weight_kg,
-      data.wajan_dhalta_kg,
-      data.final_weight_kg,
-      data.rate_per_kg,
-      data.total_amount,
-      data.commission_percent,
-      data.commission_amount,
-      data.final_amount,
-      data.created_by
-    ]
-  );
-
-  return result.insertId;
-  
-};
 
 exports.getPurchaseVouchers = async () => {
   const [rows] = await pool.query(

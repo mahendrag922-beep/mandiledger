@@ -5,122 +5,121 @@ const Stock = require("../models/stock.model");
 const AppError = require("../utils/AppError");
 
 exports.createPurchaseVoucher = async (req, res, next) => {
+
   const conn = await pool.getConnection();
-  //console.log("REQ BODY:", req.body);
 
   try {
     await conn.beginTransaction();
-
-    const { party_id } = req.body;
-
-    // 🔥 FETCH PARTY DETAILS
+    const { party_id, vehicle_no, gaddi_no, unloading_charge, items } = req.body;
+    //console.log(req.body);
+    // 🔥 GET PARTY
     const [[party]] = await conn.query(
-      "SELECT name, mobile FROM parties WHERE id = ?",
+      "SELECT name,mobile FROM parties WHERE id=?",
       [party_id]
     );
 
-    if (!party) {
-      throw new AppError("Farmer not found", 404);
-    }
+    if (!party) throw new Error("Farmer not found");
 
-     const voucherNo = await PurchaseVoucher.generatePurchaseVoucherNo(conn);
-  
-const data = {
-  ...req.body,
-  voucher_no: voucherNo,
-  party_name: party.name,
-  mobile: party.mobile,
-  created_by: req.user.id
-};
+    // 🔥 GENERATE VOUCHER NO
+    const voucherNo = await PurchaseVoucher.generatePurchaseVoucherNo(conn);
 
-    
-    const voucherId = await PurchaseVoucher.createPurchaseVoucher(data, conn);
+    // 🔥 CALCULATE TOTALS
+    let totalBags = 0;
+    const totalUnloadingCharge = Number(unloading_charge) || 0;
+    const gaddiNo = gaddi_no || "";
+    let totalWeight = 0;
+    let totalAmount = 0;
+    let totalDhalta = 0;
+    let totalFinalWeight = 0;
+    let totalCommission = 0;
+    let totalFinalAmount = 0;
 
-        // 2️⃣ Ledger entry (DEBIT farmer)
-        await addLedgerEntry({
-  partyId: party_id,
-  voucherNo: data.voucher_no,
-  referenceType: "purchase",
-  entryType: "purchase",
-  debit: data.final_amount,
-  credit: 0,
-  referenceId: voucherId,
-  conn
-});
-// 4️⃣ Stock IN (convert KG → Quintal)
-    const commodity = data.commodity;
-    const quantity = Number(data.final_weight_kg) / 100;
+    items.forEach(item => {
 
+  totalBags += Number(item.bags) || 0;
+  totalWeight += Number(item.total_weight_kg) || 0;
+  totalAmount += Number(item.total_amount) || 0;
+  totalDhalta += Number(item.wajan_dhalta_kg) || 0;
+  totalFinalWeight += Number(item.final_weight_kg) || 0;
+  totalCommission += Number(item.commission_amount) || 0;
 
-
-        // 3️⃣ Stock IN
-        await Stock.updateStock({
-          commodity,
-      quantity, // ✅ STOCK IN
-          conn
-        });
-    
-    
-
-    await conn.commit();
-
-    res.status(201).json({
-      status: "success",
-      voucherId
-    });
-
-  } catch (err) {
-    await conn.rollback();
-    next(err);
-  } finally {
-    conn.release();
-  }
-};
-
-
-exports.updatePurchaseVoucher = async (req, res, next) => {
-  const conn = await pool.getConnection();
-
-  try {
-    await conn.beginTransaction();
-
-    const { id } = req.params;
-
-    const [[old]] = await conn.query(
-      "SELECT * FROM voucher_purchase WHERE id = ?",
-      [id]
-    );
-
-    if (!old) {
-      throw new AppError("Voucher not found", 404);
-    }
-
-    // 🔥 UPDATE FULL VOUCHER
-    await PurchaseVoucher.updatePurchaseVoucher(id, req.body, conn);
-
-      await updateLedgerByVoucher({
-  partyId: old.party_id,
-  voucherNo: old.voucher_no,
-  entryType: "purchase_edit",
-  referenceType:"purchase",
-  debit: req.body.final_amount,
-  credit: 0,
-  conn
+  // ✅ Correct summing
+  totalFinalAmount += Number(item.final_amount) || 0;
 });
 
-        
+totalFinalAmount = totalFinalAmount - totalUnloadingCharge;
+    // 🔥 INSERT HEADER
+    const [header] = await conn.query(`
+      INSERT INTO voucher_purchase
+      (voucher_no, party_id, party_name,mobile, vehicle_no,
+       total_bags,unloading_charge,gaddi_no, total_weight_kg,total_amount,
+       total_wajan_dhalta_kg, total_final_weight_kg,
+       total_commission, total_final_amount,
+       created_by)
+      VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+    `, [
+      voucherNo,
+      party_id,
+      party.name,
+      party.mobile,
+      vehicle_no,
+      totalBags,
+      totalUnloadingCharge,
+      gaddiNo,
+      totalWeight,
+      totalAmount,
+      totalDhalta,
+      totalFinalWeight,
+      totalCommission,
+      totalFinalAmount,
+      req.user.id
+    ]);
 
-    // 📦 STOCK DIFF
-    const stockDiff =
-      (Number(req.body.final_weight_kg) - Number(old.final_weight_kg)) / 100;
+const voucherId = header.insertId;
+    // 🔥 INSERT ITEMS
+    for (const item of items) {
 
-    if (stockDiff !== 0) {
+      await conn.query(`
+        INSERT INTO voucher_purchase_items
+        (voucher_id, commodity,hsn_no, bags,
+         total_weight_kg, wajan_dhalta_kg, final_weight_kg,
+         rate_per_kg, total_amount,
+         commission_percent, commission_amount, final_amount)
+        VALUES (?,?,?,?,?,?,?,?,?,?,?,?)
+      `, [
+        voucherId,
+        item.commodity,
+        item.hsn_no,
+        item.bags,
+        item.total_weight_kg,
+        item.wajan_dhalta_kg,
+        item.final_weight_kg,
+        item.rate_per_kg,
+        item.total_amount,
+        item.commission_percent,
+        item.commission_amount,
+        item.final_amount
+      ]);
+
+      // 🔥 STOCK UPDATE
       await Stock.updateStock({
-        commodity: req.body.commodity,
-        quantity: stockDiff,
+        commodity: item.commodity,
+        quantity: item.final_weight_kg / 100,
         conn
       });
     }
+
+    // 🔥 LEDGER ENTRY
+    await addLedgerEntry({
+      partyId: party_id,
+      voucherNo,
+      entryType: "purchase",
+      referenceType: "purchase",
+      debit: totalFinalAmount,
+      credit: 0,
+      referenceId: voucherId,
+      conn
+    });
 
     await conn.commit();
 
@@ -133,6 +132,140 @@ exports.updatePurchaseVoucher = async (req, res, next) => {
     conn.release();
   }
 };
+exports.updatePurchaseVoucher = async (req, res, next) => {
+
+  const conn = await pool.getConnection();
+
+  try {
+    await conn.beginTransaction();
+  
+    const { id } = req.params;
+    const { item_id, itemData } = req.body;
+
+    // 1️⃣ GET HEADER
+    const [[header]] = await conn.query(
+      "SELECT * FROM voucher_purchase WHERE id=?",
+      [id]
+    );
+
+    if (!header) throw new Error("Voucher not found");
+
+    // 2️⃣ GET OLD ITEM (for stock difference)
+    const [[oldItem]] = await conn.query(
+      "SELECT * FROM voucher_purchase_items WHERE id=?",
+      [item_id]
+    );
+
+    if (!oldItem) throw new Error("Item not found");
+
+    // 3️⃣ UPDATE ITEM
+    await conn.query(`
+      UPDATE voucher_purchase_items
+      SET bags=?,
+          total_weight_kg=?,
+          wajan_dhalta_kg=?,
+          final_weight_kg=?,
+          rate_per_kg=?,
+          total_amount=?,
+          commission_percent=?,
+          commission_amount=?,
+          final_amount=?
+      WHERE id=?
+    `, [
+      itemData.bags,
+      itemData.total_weight_kg,
+      itemData.wajan_dhalta_kg,
+      itemData.final_weight_kg,
+      itemData.rate_per_kg,
+      itemData.total_amount,
+      itemData.commission_percent,
+      itemData.commission_amount,
+      itemData.final_amount,
+      item_id
+    ]);
+
+    // 4️⃣ STOCK DIFFERENCE
+    const stockDiff =
+      (itemData.final_weight_kg - oldItem.final_weight_kg) / 100;
+
+    if (stockDiff !== 0) {
+      await Stock.updateStock({
+        commodity: oldItem.commodity,
+        quantity: stockDiff,
+        conn
+      });
+    }
+
+    // 5️⃣ RECALCULATE HEADER TOTALS
+    const [items] = await conn.query(
+      "SELECT * FROM voucher_purchase_items WHERE voucher_id=?",
+      [id]
+    );
+
+    let totalBags = 0;
+    let totalWeight = 0;
+    let totalAmount = 0;
+    let totalDhalta = 0;
+    let totalFinalWeight = 0;
+    let totalCommission = 0;
+    let totalFinalAmount = 0;
+
+    items.forEach(item => {
+  totalBags += Number(item.bags);
+  totalWeight += Number(item.total_weight_kg);
+  totalAmount += Number(item.total_amount);
+  totalDhalta += Number(item.wajan_dhalta_kg);
+  totalFinalWeight += Number(item.final_weight_kg);
+  totalCommission += Number(item.commission_amount);
+  totalFinalAmount += Number(item.final_amount);
+});
+    // 6️⃣ UPDATE HEADER
+    await conn.query(`
+      UPDATE voucher_purchase
+      SET total_bags=?,
+          total_weight_kg=?,
+          total_amount=?,
+          total_wajan_dhalta_kg=?,
+          total_final_weight_kg=?,
+          total_commission=?,
+          total_final_amount=?,
+          modified_at=NOW()
+      WHERE id=?
+    `, [
+      totalBags,
+      totalWeight,
+      totalAmount,
+      totalDhalta,
+      totalFinalWeight,
+      totalCommission,
+      totalFinalAmount,
+      id
+    ]);
+
+    // 7️⃣ LEDGER UPDATE
+    await updateLedgerByVoucher({
+      partyId: header.party_id,
+      voucherNo: header.voucher_no,
+      entryType: "purchase_edit",
+      referenceType: "purchase",
+      debit: totalFinalAmount,
+      credit: 0,
+      conn
+    });
+
+    await conn.commit();
+
+    res.json({ status: "success" });
+
+  } catch (err) {
+  console.error("UPDATE ERROR:", err);
+  await conn.rollback();
+  next(err);
+} finally {
+    conn.release();
+  }
+};
+
 exports.reversePurchaseVoucher = async (req, res, next) => {
   const conn = await pool.getConnection();
 
@@ -141,6 +274,7 @@ exports.reversePurchaseVoucher = async (req, res, next) => {
 
     const { id } = req.params;
 
+    // 1️⃣ Get header
     const [[voucher]] = await conn.query(
       "SELECT * FROM voucher_purchase WHERE id = ?",
       [id]
@@ -154,7 +288,40 @@ exports.reversePurchaseVoucher = async (req, res, next) => {
       throw new AppError("Voucher already reversed", 400);
     }
 
-    // 1️⃣ MARK REVERSED
+    // 2️⃣ Get all items
+    const [items] = await conn.query(
+      "SELECT * FROM voucher_purchase_items WHERE voucher_id = ?",
+      [id]
+    );
+
+    if (!items.length) {
+      throw new AppError("No items found for this voucher", 400);
+    }
+
+    // 3️⃣ Reverse stock for EACH item
+    for (const item of items) {
+      const qtyQuintal = Number(item.final_weight_kg) / 100;
+
+      await Stock.updateStock({
+        commodity: item.commodity,
+        quantity: -qtyQuintal,   // subtract stock
+        conn
+      });
+    }
+
+    // 4️⃣ Ledger reversal (reverse full amount)
+    await addLedgerEntry({
+      partyId: voucher.party_id,
+      voucherNo: voucher.voucher_no,
+      entryType: "purchase_reverse",
+      referenceType: "purchase",
+      debit: 0,
+      credit: voucher.total_final_amount,
+      referenceId: voucher.id,
+      conn
+    });
+
+    // 5️⃣ Mark header reversed
     await conn.query(
       `UPDATE voucher_purchase
        SET is_reversed = 1,
@@ -163,32 +330,11 @@ exports.reversePurchaseVoucher = async (req, res, next) => {
       [id]
     );
 
-    // 2️⃣ LEDGER REVERSAL
-    await updateLedgerByVoucher({
-  partyId: voucher.party_id,
-  voucherNo: voucher.voucher_no,
-  entryType: "purchase_reverse",
-  referenceType:"purchase",
-  debit: 0,
-  credit: voucher.final_amount,
-  conn
-});
-
-    
-    // 3️⃣ STOCK OUT (REMOVE PURCHASED STOCK)
-    const qtyQuintal = Number(voucher.final_weight_kg) / 100;
-
-    await Stock.updateStock({
-      commodity: voucher.commodity,
-      quantity: -qtyQuintal,
-      conn
-    });
-
     await conn.commit();
 
     res.json({
       status: "success",
-      message: "Purchase voucher reversed safely"
+      message: "Purchase voucher reversed successfully"
     });
 
   } catch (err) {
@@ -199,3 +345,18 @@ exports.reversePurchaseVoucher = async (req, res, next) => {
   }
 };
 
+exports.getPurchaseItems = async (req, res) => {
+
+  const { id } = req.params;
+
+  const [items] = await pool.query(
+    `SELECT * FROM voucher_purchase_items
+     WHERE voucher_id = ?`,
+    [id]
+  );
+
+  res.json({
+    status: "success",
+    data: items
+  });
+};

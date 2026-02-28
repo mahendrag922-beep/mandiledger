@@ -105,3 +105,190 @@ th {
 .due-row:hover {
   background: #f1f5f9;
 }
+.status-red {
+      color: #b91c1c;
+      font-weight: bold;
+    }
+
+    .status-green {
+      color: #166534;
+      font-weight: bold;
+    }
+
+    .form-section {
+      margin-top: 10px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 6px;
+      margin-bottom: 8px;
+    }
+
+    button {
+      padding: 8px 12px;
+      cursor: pointer;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 8px;
+      border: 1px solid #ddd;
+      text-align: left;
+    }
+
+    tr:hover {
+      background: #f5f5f5;
+      cursor: pointer;
+    }
+  /* =========================
+   DUE SECTION STYLE
+========================= */
+
+.due-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.due-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.due-tab {
+  padding: 8px 18px;
+  border-radius: 20px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid #ddd;
+  transition: 0.3s ease;
+  font-size: 14px;
+}
+
+/* COLORS */
+
+.due-tab.all {
+  background: #e2e8f0;
+  color: #1e293b;
+}
+
+.due-tab.farmer {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.due-tab.mill {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.due-tab.transport {
+  background: #ffedd5;
+  color: #c2410c;
+}
+
+/* ACTIVE TAB */
+
+.due-tab.active {
+  box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+  transform: translateY(-2px);
+}
+
+/* TABLE WRAPPER */
+
+.due-table-wrapper {
+  max-height: 350px;
+  overflow-y: auto;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+}
+
+.due-table-wrapper table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.due-table-wrapper th {
+  background: #f8fafc;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+
+/* ===========================
+   PAYMENT DUE VOUCHER CARDS
+=========================== */
+
+.due-steps {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 18px;
+  justify-content: space-between;
+}
+
+.due-voucher-card {
+  flex: 1;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 14px;
+  text-align: center;
+  cursor: pointer;
+  transition: 0.25s;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.due-voucher-card .icon {
+  font-size: 20px;
+  margin-bottom: 5px;
+}
+
+.due-voucher-card .title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #334155;
+}
+
+/* Hover */
+.due-voucher-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+}
+
+/* Active */
+.due-voucher-card.active {
+  color: white;
+}
+
+/* Category Colors */
+
+.due-voucher-card.all.active {
+  background: #334155;
+  border-color: #334155;
+}
+
+.due-voucher-card.farmer.active {
+  background: #b91c1c;
+  border-color: #b91c1c;
+}
+
+.due-voucher-card.mill.active {
+  background: #2563eb;
+  border-color: #2563eb;
+}
+
+.due-voucher-card.transport.active {
+  background: #ea580c;
+  border-color: #ea580c;
+}
+
+.due-voucher-card.active .title,
+.due-voucher-card.active .icon {
+  color: white;
+}

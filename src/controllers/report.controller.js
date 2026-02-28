@@ -30,29 +30,56 @@ exports.dailyReport = async (req, res) => {
   });
 };
 
-exports.outstandingReport = async (req, res, next) => {
-  const [rows] = await pool.query(`
-    SELECT 
-      p.id AS party_id,
-      p.name,
-      p.party_type,
-      IFNULL(SUM(l.debit),0) AS total_debit,
-      IFNULL(SUM(l.credit),0) AS total_credit,
-      (IFNULL(SUM(l.debit),0) - IFNULL(SUM(l.credit),0)) AS balance
-    FROM parties p
-    LEFT JOIN ledger_entries l ON l.party_id = p.id
-    GROUP BY p.id, p.name, p.party_type
-    HAVING balance > 0
-  `);
+exports.outstandingReport = async (req, res) => {
+  try {
 
-  res.json({ status: "success", data: rows });
+    // 🔵 Farmer + Mill (Ledger Based)
+    const [ledgerRows] = await pool.query(`
+      SELECT 
+        p.id AS party_id,
+        p.name,
+        p.party_type,
+        l.voucher_no,
+        SUM(l.debit) AS total_debit,
+        SUM(l.credit) AS total_credit,
+        (SUM(l.debit) - SUM(l.credit)) AS balance
+      FROM ledger_entries l
+      JOIN parties p ON p.id = l.party_id
+      WHERE p.party_type IN ('farmer','mill')
+      GROUP BY p.id, l.voucher_no
+      HAVING balance > 0
+    `);
+
+    // 🔴 Transport (Use Remaining Payment)
+    const [transportRows] = await pool.query(`
+  SELECT
+    p.id AS party_id,
+    p.name,
+    'transport' AS party_type,
+    t.transport_voucher_no AS voucher_no,
+    t.remaining_payment AS balance
+  FROM transport_history t
+  JOIN transports tr ON tr.id = t.transport_id
+  JOIN parties p ON p.id = tr.party_id
+  WHERE t.remaining_payment > 0
+`);
+    res.json({
+      status: "success",
+      data: [...ledgerRows, ...transportRows]
+    });
+
+  } catch (err) {
+    console.error("Outstanding error:", err);
+    res.status(500).json({ error: err.message });
+  }
 };
+
 
 exports.profitReport = async (req, res) => {
   const [[result]] = await pool.query(
     `SELECT
-       (SELECT IFNULL(SUM(total_amount),0) FROM sales) -
-       (SELECT IFNULL(SUM(total_amount),0) FROM purchases)
+       (SELECT IFNULL(SUM(total_amount),0) FROM voucher_sale) -
+       (SELECT IFNULL(SUM(total_amount),0) FROM voucher_purchase)
        AS profit`
   );
 

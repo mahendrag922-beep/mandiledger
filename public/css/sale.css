@@ -265,3 +265,291 @@ body {
   font-weight: 700;
   color: #16a34a;
 }
+/* ADDRESS SECTION */
+.address-section {
+  margin-top: 15px;
+}
+
+.wide-textarea {
+  width: 100%;
+  min-height: 70px;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  resize: vertical;
+  font-family: inherit;
+}
+
+/* CHECKBOX ALIGNMENT */
+.checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 10px 0;
+}
+
+.checkbox-row input {
+  width: 16px;
+  height: 16px;
+}
+.transport-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.transport-row select {
+  flex: 1;
+}
+
+.mini-btn {
+  padding: 6px 10px;
+  font-size: 13px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.mini-btn:hover {
+  background: #1e40af;
+}
+/* ============================
+   PROFESSIONAL TRANSPORT UI
+============================ */
+
+.transport-section {
+  margin-top: 25px;
+  padding: 20px;
+  background: #f8fafc;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.section-header h4 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+/* Modern Select */
+.modern-select {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  background: white;
+  font-size: 14px;
+  transition: 0.2s;
+}
+
+.modern-select:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37,99,235,0.15);
+}
+
+/* Readonly Input */
+.readonly-input {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  background: #f1f5f9;
+  font-size: 14px;
+}
+
+/* Grid Layout */
+.transport-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  margin-top: 10px;
+}
+
+/* Field Wrapper */
+.field-group label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #475569;
+  margin-bottom: 6px;
+  display: block;
+}
+
+/* Select + Button inline */
+.select-with-btn {
+  display: flex;
+  gap: 8px;
+}
+
+.select-with-btn select {
+  flex: 1;
+}
+
+/* Professional Outline Button */
+.btn-outline {
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 8px;
+  border: 1px solid #2563eb;
+  background: white;
+  color: #2563eb;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.btn-outline:hover {
+  background: #2563eb;
+  color: white;
+}
+
+.btn-outline.small {
+  padding: 8px 10px;
+  font-size: 12px;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .transport-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ================= DRIVER MODAL ================= */
+
+.small-modal {
+  max-width: 400px;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+.modal-content {
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 600px;
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+.modal-content h3 {
+  margin-top: 0;
+  margin-bottom: 20px;
+}
+
+.modal-content input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.modal-actions button {
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}
+
+.modal-actions button:first-child {
+  background: #2563eb;
+  color: white;
+}
+
+.modal-actions .cancel {
+  background: #e5e7eb;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* ===========================
+   SALE VOUCHER STEP CARDS
+=========================== */
+
+.sale-steps {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 25px;
+  justify-content: space-between;
+}
+
+.voucher-card {
+  flex: 1;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 15px;
+  text-align: center;
+  cursor: pointer;
+  transition: 0.2s;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.voucher-card .icon {
+  font-size: 22px;
+  margin-bottom: 6px;
+}
+
+.voucher-card .title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #334155;
+}
+
+.voucher-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+}
+
+/* ACTIVE CARD */
+.voucher-card.active {
+  background: #2563eb;
+  border-color: #2563eb;
+}
+
+.voucher-card.active .title,
+.voucher-card.active .icon {
+  color: white;
+}
+
+/* SAVE CARD SPECIAL STYLE */
+.voucher-card.save {
+  background: #16a34a;
+  border-color: #16a34a;
+}
+
+.voucher-card.save .title,
+.voucher-card.save .icon {
+  color: white;
+}
+
+.voucher-card.save.active {
+  background: #15803d;
+}

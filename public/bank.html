@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Bank & Cash</title>
+  <link rel="stylesheet" href="css/bank.css">
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="logo">🌾 MandiLedger ERP</div>
+  <div class="nav-links">
+     <a href="dashboard.html">Dashboard</a>
+    <a href="parties.html">Parties</a>
+    <a href="brokers.html">Brokers</a>
+    <a href="transports.html">Transport</a>
+    <a href="purchase.html">Purchase</a>
+    <a href="sale.html">Sale</a>
+    <a href="ledger.html">Ledger</a>
+    <a href="payments.html">Payments</a>
+    <a href="vouchers.html" class="active">Vouchers</a>
+    <a href="stock-report.html">Stock Report</a>
+    <a href="reports.html">Reports</a>
+    <a href="#" onclick="logout()">Logout</a>
+  </div>
+</nav>
+
+<div class="container">
+
+  <!-- LEFT MENU -->
+  <div class="sidebar">
+
+    <button onclick="openBankForm()">➕ Add Bank</button>
+    <button onclick="showBanks()">🏦 Show Banks</button>
+    <button onclick="showCash()">💰 Cash History</button>
+    <button onclick="openTransferForm()">🔁 Transfer Bank → Cash</button>
+
+  </div>
+
+  <!-- RIGHT CONTENT AREA -->
+   <div class = "content">
+    <div id = "breadcrumb"></div>
+ <div id="mainContent">
+
+  <div class="balance-row">
+
+    <!-- BANK BALANCE CARD -->
+    <div class="balance-card" id="bankBalanceCard">
+      <h3>🏦 Bank Balances</h3>
+      <div id="bankBalancesList">
+        Loading...
+      </div>
+    </div>
+
+    <!-- CASH BALANCE CARD -->
+    <div class="balance-card" id="cashBalanceCard">
+      <h3>💰 Cash Balance</h3>
+      <h2 id="totalCashBalance">₹ 0.00</h2>
+    </div>
+
+  </div>
+
+</div>
+</div>
+
+
+<!-- ================= POPUP MODALS ================= -->
+
+<!-- ADD BANK MODAL -->
+<div class="modal" id="bankModal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal('bankModal')">&times;</span>
+    <h3>Add Bank</h3>
+
+    <label>Bank Name</label>
+    <input id="bank_name">
+
+    <label>Account No</label>
+    <input id="account_no">
+
+    <label>IFSC Code</label>
+    <input id="ifsc_code">
+
+    <button onclick="addBank()">Save Bank</button>
+  </div>
+</div>
+
+
+<!-- TRANSFER MODAL -->
+<div class="modal" id="transferModal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal('transferModal')">&times;</span>
+    <h3>🔁 Transfer Bank → Cash</h3>
+
+    <label>Select Bank</label>
+    <select id="transferBank" onchange="loadTransferEntries()"></select>
+
+    <label>Select Sale Voucher Entry</label>
+    <select id="transferEntry"></select>
+
+    <label>Amount</label>
+    <input id="transferAmount" type="number">
+
+    <button onclick="transferToCash()">Transfer</button>
+    
+  </div>
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/bank.js"></script>
+
+</body>
+</html>

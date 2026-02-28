@@ -18,15 +18,32 @@ async function loadParties() {
       millSelect.appendChild(opt.cloneNode(true));
     }
   });
+
+  const transportSelect = document.getElementById("transportSelect");
+
+const transportRes = await api("/transports");
+const transportData = await transportRes.json();
+
+transportData.data.forEach(t => {
+  const opt = document.createElement("option");
+  opt.value = t.party_id;
+  opt.textContent = `#${t.id} - ${t.company_name}`;
+  transportSelect.appendChild(opt);
+});
 }
 
 /* LOAD LEDGER */
 async function loadLedger(type) {
-  const select =
-    type === "farmer"
-      ? document.getElementById("farmerSelect")
-      : document.getElementById("millSelect");
+  let select;
 
+if (type === "farmer")
+  select = document.getElementById("farmerSelect");
+
+if (type === "mill")
+  select = document.getElementById("millSelect");
+
+if (type === "transport")
+  select = document.getElementById("transportSelect");
   const partyId = select.value;
   if (!partyId) {
     alert("Please select a party");
@@ -75,6 +92,15 @@ if (type === "mill") {
   document.getElementById("thCredit").innerText = "Received";
 }
 
+if (type === "transport") {
+  document.getElementById("labelDebit").innerText = "Total Freight";
+  document.getElementById("labelCredit").innerText = "Amount Paid";
+  document.getElementById("labelBalance").innerText = "Remaining";
+
+  document.getElementById("thDebit").innerText = "Freight";
+  document.getElementById("thCredit").innerText = "Paid";
+}
+
   data.data.forEach(l => {
     const debit = Number(l.debit) || 0;
     const credit = Number(l.credit) || 0;
@@ -93,6 +119,7 @@ if (type === "mill") {
     </td>
 
     <td>${l.voucher_no || "-"}</td>
+    <td>${l.receiptNo || "-"}</td>
 
     <td>${l.entry_type}</td>
 

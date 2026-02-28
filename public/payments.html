@@ -1,79 +1,182 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <title>Payments</title>
   <link rel="stylesheet" href="css/payments.css">
 </head>
+
 <body>
 
-<nav class="navbar">
-  <div class="logo">🌾 MandiLedger ERP</div>
-  <div class="nav-links">
-    <a href="dashboard.html">Dashboard</a>
-    <a href="parties.html">Parties</a>
-    <a href="brokers.html">Brokers</a>
-    <a href="transports.html">Transport</a>
-    <a href="purchase.html">Purchase</a>
-    <a href="sale.html">Sale</a>
-    <a href="ledger.html">Ledger</a>
-    <a href="vouchers.html" class="active">Vouchers</a>
-    <a href="stock-report.html">Stock Report</a>
-    <a href="reports.html">Reports</a>
-    <a href="#" onclick="logout()">Logout</a>
+  <nav class="navbar">
+    <div class="logo">🌾 MandiLedger ERP</div>
+    <div class="nav-links">
+      <a href="dashboard.html">Dashboard</a>
+      <a href="bank.html">Bank</a>
+      <a href="parties.html">Parties</a>
+      <a href="brokers.html">Brokers</a>
+      <a href="transports.html">Transport</a>
+      <a href="purchase.html">Purchase</a>
+      <a href="sale.html">Sale</a>
+      <a href="ledger.html">Ledger</a>
+      <a href="vouchers.html" class="active">Vouchers</a>
+      <a href="stock-report.html">Stock Report</a>
+      <a href="reports.html">Reports</a>
+      <a href="#" onclick="logout()">Logout</a>
+    </div>
+  </nav>
+
+  <div class="container">
+
+    <!-- PAYMENT FORM -->
+    <div class="card">
+      <h3>💰 Add Payment</h3>
+
+      <label>Party ID</label>
+      <input id="party_id" readonly>
+
+      <label>Party Name</label>
+      <input id="party_name" readonly>
+
+      <label>Voucher No</label>
+      <input id="voucher_no" readonly>
+
+      <label>Total Amount (₹)</label>
+      <input id="amount">
+
+
+      <!-- EXTRA DEDUCTIONS (ONLY FOR MILL RECEIPT) -->
+      <div id="millAdjustments" style="display:none; margin-top:15px;">
+
+        <h4>Mill Adjustments</h4>
+
+        <div class="form-row">
+          <label>Case Discount</label>
+          <input type="number" id="case_discount" value="0" oninput="recalcMillAmount()">
+        </div>
+
+        <div class="form-row">
+          <label>Weight Shortage</label>
+          <input type="number" id="weight_shortage" value="0" oninput="recalcMillAmount()">
+        </div>
+
+        <div class="form-row">
+          <label>Unloading Charges</label>
+          <input type="number" id="unloading_charges" value="0" oninput="recalcMillAmount()">
+        </div>
+
+        <div class="form-row">
+          <label>Brokerage Commission</label>
+          <input type="number" id="brokerage_commission" value="0" oninput="recalcMillAmount()">
+        </div>
+
+        <div class="form-row">
+          <label>Quality Claim</label>
+          <input type="number" id="quality_claim" value="0" oninput="recalcMillAmount()">
+        </div>
+
+        <div class="form-row">
+          <label>Bank Charges (Fixed)</label>
+          <input type="number" id="bank_charges" value="200" readonly>
+        </div>
+
+        <div class="form-row">
+          <strong>Final Amount Received:</strong>
+          ₹ <span id="final_received_amount">0</span>
+        </div>
+
+      </div>
+
+      <label>Payment Type</label>
+      <select id="payment_type" onchange="loadSources()">
+        <option value="cash">Cash</option>
+        <option value="bank">Bank</option>
+      </select>
+
+      <!-- BANK SECTION -->
+      <div id="bankSection" class="form-section" style="display:none">
+
+        <label>Select Bank</label>
+        <select id="bankSelect" onchange="loadBankEntries()"></select>
+
+        <div id="bankEntryWrapper">
+          <label>Select Bank Entry (Sale Voucher Amount)</label>
+          <select id="bankEntrySelect"></select>
+        </div>
+
+      </div>
+
+      <!-- CASH SECTION -->
+      <div id="cashSection" class="form-section">
+
+        <label>Select Cash ID</label>
+        <select id="cashSelect"></select>
+
+      </div>
+
+      <label>Direction</label>
+      <select id="direction">
+        <option value="paid">Paid (to Farmer)</option>
+        <option value="received">Received (from Mill)</option>
+      </select>
+      <button onclick="savePayment()">Save Payment</button>
+
+    </div>
+
+
+    <!-- RIGHT SIDE: DUE SECTION -->
+<div class="card due-card">
+
+  <h3>⏰ Payment Due Alerts</h3>
+
+  <!-- FILTER TABS -->
+  <div class="due-steps">
+
+  <div class="due-voucher-card active all" onclick="filterDue('all', this)">
+    <div class="icon">📊</div>
+    <div class="title">All</div>
   </div>
-</nav>
 
-<div class="container">
-
-  <!-- PAYMENT FORM -->
-  <div class="card">
-    <h3>💰 Add Payment</h3>
-
-    <label>Party ID</label>
-    <input id="party_id" placeholder="e.g. 1">
-
-    <label>Amount (₹)</label>
-    <input id="amount" placeholder="e.g. 5000">
-
-    <label>Payment Type</label>
-    <select id="payment_type">
-      <option value="cash">Cash</option>
-      <option value="bank">Bank</option>
-      <option value="upi">UPI</option>
-    </select>
-
-    <label>Direction</label>
-    <select id="direction">
-      <option value="paid">Paid (to Farmer)</option>
-      <option value="received">Received (from Mill)</option>
-    </select>
-
-    <button onclick="savePayment()">Save Payment</button>
+  <div class="due-voucher-card farmer" onclick="filterDue('farmer', this)">
+    <div class="icon">🌾</div>
+    <div class="title">Farmer</div>
   </div>
 
-  <!-- DUE ALERTS -->
-  <div class="card">
-    <h3>⏰ Payment Due Alerts</h3>
+  <div class="due-voucher-card mill" onclick="filterDue('mill', this)">
+    <div class="icon">🏭</div>
+    <div class="title">Mill</div>
+  </div>
 
+  <div class="due-voucher-card transport" onclick="filterDue('transport', this)">
+    <div class="icon">🚛</div>
+    <div class="title">Transport</div>
+  </div>
+
+</div>
+  <!-- TABLE -->
+  <div class="due-table-wrapper">
     <table>
-  <thead>
-    <tr>
-      <th>Party ID</th>
-      <th>Party Name</th>
-      <th>Amount (₹)</th>
-      <th>Status</th>
-    </tr>
-  </thead>
-  <tbody id="dueTable">
-    <tr><td colspan="4">Loading…</td></tr>
-  </tbody>
-</table>
-
+      <thead>
+        <tr>
+          <th>Party ID</th>
+          <th>Name</th>
+          <th>Voucher</th>
+          <th>Amount</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="dueTable">
+        <tr>
+          <td colspan="5">Loading...</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 
 </div>
 
-<script src="js/api.js"></script>
-<script src="js/payments.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/payments.js"></script>
 </body>
+
 </html>

@@ -1,39 +1,67 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <title>Purchase Entry</title>
   <link rel="stylesheet" href="css/purchase.css">
 </head>
+
 <body>
 
-<nav class="navbar">
-  <div class="logo">🌾 MandiLedger ERP</div>
-  <div class="nav-links">
-    <a href="dashboard.html">Dashboard</a>
-    <a href="parties.html">Parties</a>
-    <a href="brokers.html">Brokers</a>
-    <a href="transports.html">Transport</a>
-    <a href="sale.html">Sale</a>
-    <a href="ledger.html">Ledger</a>
-    <a href="payments.html">Payments</a>
-    <a href="vouchers.html" class="active">Vouchers</a>
-    <a href="stock-report.html">Stock Report</a>
-    <a href="reports.html">Reports</a>
-    <a href="#" onclick="logout()">Logout</a>
+  <nav class="navbar">
+    <div class="logo">🌾 MandiLedger ERP</div>
+    <div class="nav-links">
+      <a href="dashboard.html">Dashboard</a>
+      <a href="parties.html">Parties</a>
+      <a href="brokers.html">Brokers</a>
+      <a href="transports.html">Transport</a>
+      <a href="sale.html">Sale</a>
+      <a href="ledger.html">Ledger</a>
+      <a href="payments.html">Payments</a>
+      <a href="vouchers.html" class="active">Vouchers</a>
+      <a href="stock-report.html">Stock Report</a>
+      <a href="reports.html">Reports</a>
+      <a href="#" onclick="logout()">Logout</a>
+    </div>
+  </nav>
+  <div class="purchase-container">
+
+    <!-- LEFT FORM -->
+    <div class="purchase-form">
+
+  <h2>📥 Purchase Entry (Farmer)</h2>
+
+  <!-- ================= STEP BUTTONS ================= -->
+  <div class="voucher-steps">
+
+    <div class="voucher-card active" onclick="openSection('farmerSection', this)">
+      <div class="icon">👤</div>
+      <div class="title">Farmer Detail</div>
+    </div>
+
+    <div class="voucher-card" onclick="openSection('commoditySection', this)">
+      <div class="icon">🌾</div>
+      <div class="title">Commodity</div>
+    </div>
+
+    <div class="voucher-card" onclick="openSection('extraSection', this)">
+      <div class="icon">🚛</div>
+      <div class="title">Extra Detail</div>
+    </div>
+
+    <div class="voucher-card save-card" onclick="openSection('saveSection',this)">
+    <div class="icon">💾</div>
+    <div class="title">Save</div>
   </div>
-</nav>
-<div class="purchase-container">
 
-  <!-- LEFT FORM -->
-  <div class="purchase-form">
+  </div>
 
-    <h2>📥 Purchase Entry (Farmer)</h2>
+  <!-- ================= FARMER SECTION ================= -->
+  <div id="farmerSection" class="form-section active-section">
 
-    <!-- FARMER SEARCH -->
     <label>Farmer</label>
     <input id="farmerSearch" placeholder="Search farmer by name">
     <div id="farmerList" class="dropdown"></div>
-
     <input type="hidden" id="party_id">
 
     <div class="row">
@@ -47,94 +75,145 @@
       </div>
     </div>
 
-    <!-- COMMODITY -->
-     <label>Commodity</label>
-<select id="commodity" onchange="selectCommodity(this.value)">
-  <option value="">Select Commodity</option>
-</select>
+  </div>
 
-    <!-- TRANSPORT -->
+  <!-- ================= COMMODITY SECTION ================= -->
+  <div id="commoditySection" class="form-section">
+
+    <div class="add-commodity-card" onclick="showCommodityForm()">
+  <div class="add-icon">➕</div>
+  <div class="add-text">
+    <strong>Add Commodity</strong>
+    <small>Click to add item details</small>
+  </div>
+</div>
+    <div id="commodityForm" style="display:none; margin-top:15px; border:1px solid #ddd; padding:15px; border-radius:8px;">
+
+      <div class="row">
+        <div>
+          <label>Commodity</label>
+          <select id="commodity" onchange="selectCommodity(this.value)">
+            <option value="">Select Commodity</option>
+          </select>
+        </div>
+        <div>
+          <label>HSN NO</label>
+          <input type="text" id="hsn_no" readonly>
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <label>No of Bags</label>
+          <input id="bags" type="number">
+        </div>
+        <div>
+          <label>Wajan Dhalta (Gram per Bag)</label>
+          <input id="wajan_dhalta_input" type="number">
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <label>Quintal</label>
+          <input id="quintal" type="number">
+        </div>
+        <div>
+          <label>Kg</label>
+          <input id="kg" type="number">
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <label>Rate (₹ / Kg)</label>
+          <input id="rate" type="number">
+        </div>
+        <div>
+          <label>Mandi Commission (%)</label>
+          <input id="commission" type="number">
+        </div>
+      </div>
+
+      <button type="button" onclick="addCommodityItem()">Add</button>
+
+    </div>
+
+    <hr>
+    <h4>Added Commodities</h4>
+    <div id="commoditySummary"></div>
+
+  </div>
+
+  <!-- ================= EXTRA DETAIL SECTION ================= -->
+  <div id="extraSection" class="form-section">
+
+    <div class="row">
+      <div>
+        <label>Unloading Charge (₹)</label>
+        <input id="unloadingCharge" type="number" value="0" oninput="renderSummary()">
+      </div>
+    </div>
+
     <div class="row">
       <div>
         <label>Vehicle No</label>
         <input id="vehicle_no" placeholder="UP32 AB 1234">
       </div>
       <div>
-        <label>No of Bags</label>
-        <input id="bags" type="number" oninput="calculatePurchase()">
+        <label>Gaddi No</label>
+        <input id="gaddiNo" placeholder="Enter Gaddi No">
       </div>
-    </div>
-
-    <!-- WEIGHT -->
-    <div class="row">
-      <div>
-        <label>Quintal</label>
-        <input id="quintal" type="number" oninput="calculatePurchase()">
-      </div>
-      <div>
-        <label>Kg</label>
-        <input id="kg" type="number" oninput="calculatePurchase()">
-      </div>
-    </div>
-
-    <!-- RATE & COMMISSION -->
-    <div class="row">
-      <div>
-        <label>Rate (₹ / Kg)</label>
-        <input id="rate" type="number" oninput="calculatePurchase()">
-      </div>
-      <div>
-        <label>Mandi Commission (%)</label>
-        <input id="commission" type="number" step="0.01" oninput="calculatePurchase()">
-      </div>
-    </div>
-
-    <button class="btn-save" onclick="savePurchase()">
-      💾 Save Purchase Voucher
-    </button>
-
-  </div>
-
-  <!-- RIGHT SUMMARY -->
-  <div class="purchase-summary">
-
-    <h3>📊 Calculation Summary</h3>
-
-    <div class="summary-card">
-      <span>Total Weight</span>
-      <b id="totalWeight">0 Kg</b>
-    </div>
-
-    <div class="summary-card">
-      <span>Wajan Dhalta</span>
-      <b id="dhalta">0 Kg</b>
-    </div>
-
-    <div class="summary-card highlight">
-      <span>Final Weight</span>
-      <b id="finalWeight">0 Kg</b>
-    </div>
-
-    <div class="summary-card">
-      <span>Gross Amount</span>
-      ₹ <b id="grossAmount">0</b>
-    </div>
-
-    <div class="summary-card">
-      <span>Commission</span>
-      ₹ <input id="discount" disabled>
-    </div>
-
-    <div class="summary-card highlight">
-      <span>Final Payable</span>
-      ₹ <b id="netAmount">0</b>
     </div>
 
   </div>
+ <!-- ================= STEP 5 ================= -->
+      <div class="form-section" id="saveSection" >
+        <button class="btn-save" onclick="savePurchase()">💾 Save Purchase Voucher</button>
+      </div>
 
 </div>
+    <!-- RIGHT SUMMARY -->
+    <div class="purchase-summary">
 
-<script src="js/api.js"></script>
-<script src="js/purchase.js"></script>
+      <h3>📊 Calculation Summary</h3>
+
+      <div class="summary-card">
+        <span>Total Weight</span>
+        <b id="totalWeight">0 Kg</b>
+      </div>
+
+      <div class="summary-card">
+        <span>Wajan Dhalta</span>
+        <b id="dhalta">0 Kg</b>
+      </div>
+
+      <div class="summary-card highlight">
+        <span>Final Weight</span>
+        <b id="finalWeight">0 Kg</b>
+      </div>
+
+      <div class="summary-card">
+        <span>Gross Amount</span>
+        ₹ <b id="grossAmount">0</b>
+      </div>
+
+      <div class="summary-card">
+        <span>Commission</span>
+        ₹ <input id="discount" disabled>
+      </div>
+
+      <div class="summary-card highlight">
+        <span>Final Payable</span>
+        ₹ <b id="netAmount">0</b>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/purchase.js"></script>
 </body>
+
 </html>

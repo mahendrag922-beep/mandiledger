@@ -55,6 +55,10 @@ body {
 .red { background: #dc2626; }
 .purple { background: #7c3aed; }
 
+/* ✅ TRANSPORT COLOR */
+.orange {
+  background: linear-gradient(45deg, #ff9800, #e65100);
+}
 .table-box {
   background: white;
   padding: 15px;
@@ -227,4 +231,39 @@ th {
 .btn-cancel {
   background: #e5e7eb;
   color: #111;
+}
+.inner-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.inner-table th,
+.inner-table td {
+  border: 1px solid #ccc;
+  padding: 6px;
+  font-size: 13px;
+}
+
+.item-container {
+  padding: 10px;
+  background: #f9f9f9;
+}
+
+.inner-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.inner-table th,
+.inner-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+}
+
+.history-container {
+  background: #f9fafc;
+  padding: 10px;
 }

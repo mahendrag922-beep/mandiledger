@@ -1,6 +1,7 @@
 const pool = require("../config/db");
 
 exports.createTransport = async (conn, data) => {
+
   const {
     company_name,
     mobile_primary,
@@ -11,14 +12,42 @@ exports.createTransport = async (conn, data) => {
     pincode
   } = data;
 
-  const [result] = await conn.query(
-    `INSERT INTO transports
-     (company_name, mobile_primary, mobile_alt, address, district, state, pincode)
-     VALUES (?,?,?,?,?,?,?)`,
-    [company_name, mobile_primary, mobile_alt, address, district, state, pincode]
+  // 1️⃣ CREATE PARTY FIRST
+  const [partyResult] = await conn.query(
+    `INSERT INTO parties
+     (name, party_type, mobile, address, state, district, pincode)
+     VALUES (?, 'transport', ?, ?, ?, ?, ?)`,
+    [
+      company_name,
+      mobile_primary || null,
+      address || null,
+      state || null,
+      district || null,
+      pincode || null
+    ]
   );
 
-  return result.insertId;
+  const partyId = partyResult.insertId;
+
+  // 2️⃣ CREATE TRANSPORT WITH PARTY ID
+  const [transportResult] = await conn.query(
+    `INSERT INTO transports
+     (party_id, company_name, mobile_primary, mobile_alt,
+      address, district, state, pincode)
+     VALUES (?,?,?,?,?,?,?,?)`,
+    [
+      partyId,
+      company_name,
+      mobile_primary,
+      mobile_alt,
+      address,
+      district,
+      state,
+      pincode
+    ]
+  );
+
+  return transportResult.insertId;
 };
 
 exports.getAll = async () => {
@@ -42,22 +71,21 @@ exports.update = async (id, data) => {
   try {
     // 1️⃣ UPDATE COMPANY
     await conn.query(
-      `UPDATE transports SET
-       company_name=?, mobile_primary=?, mobile_alt=?, address=?,
-       district=?, state=?, pincode=?
-       WHERE id=?`,
-      [
-        data.company_name,
-        data.mobile_primary,
-        data.mobile_alt,
-        data.address,
-        data.district,
-        data.state,
-        data.pincode,
-        id
-      ]
-    );
-
+  `UPDATE parties SET
+   name=?, mobile=?, address=?, state=?, district=?, pincode=?
+   WHERE id = (
+      SELECT party_id FROM transports WHERE id=?
+   )`,
+  [
+    data.company_name,
+    data.mobile_primary,
+    data.address,
+    data.state,
+    data.district,
+    data.pincode,
+    id
+  ]
+);
     // 2️⃣ DRIVERS
     for (const d of data.drivers) {
       if (d.id) {
@@ -108,9 +136,22 @@ exports.update = async (id, data) => {
   }
 };
 
-exports.softDelete = async id => {
+exports.softDelete = async (id) => {
+
+  const [[row]] = await pool.query(
+    "SELECT party_id FROM transports WHERE id=?",
+    [id]
+  );
+
+  if (!row) return;
+
   await pool.query(
-    `UPDATE transports SET is_active=0 WHERE id=?`,
+    "UPDATE parties SET is_active=0 WHERE id=?",
+    [row.party_id]
+  );
+
+  await pool.query(
+    "UPDATE transports SET is_active=0 WHERE id=?",
     [id]
   );
 };

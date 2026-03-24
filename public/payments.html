@@ -38,6 +38,10 @@
       <label>Party Name</label>
       <input id="party_name" readonly>
 
+      <div id="gstSection" style="display:none;">
+  <label>GST Number</label>
+  <input id="gst_no" readonly>
+</div>
       <label>Voucher No</label>
       <input id="voucher_no" readonly>
 
@@ -73,6 +77,11 @@
         <div class="form-row">
           <label>Quality Claim</label>
           <input type="number" id="quality_claim" value="0" oninput="recalcMillAmount()">
+        </div>
+
+        <div class="form-row">
+          <label>Transport Charges</label>
+          <input type="number" id="transport_charges" value="0" oninput="recalcMillAmount()">
         </div>
 
         <div class="form-row">
@@ -125,58 +134,63 @@
 
 
     <!-- RIGHT SIDE: DUE SECTION -->
-<div class="card due-card">
+    <div class="card due-card">
 
-  <h3>⏰ Payment Due Alerts</h3>
+      <h3>⏰ Payment Due Alerts</h3>
 
-  <!-- FILTER TABS -->
-  <div class="due-steps">
+      <!-- FILTER TABS -->
+      <div class="due-steps">
 
-  <div class="due-voucher-card active all" onclick="filterDue('all', this)">
-    <div class="icon">📊</div>
-    <div class="title">All</div>
-  </div>
+        <div class="due-voucher-card active all" onclick="filterDue('all', this)">
+          <div class="icon">📊</div>
+          <div class="title">All</div>
+        </div>
 
-  <div class="due-voucher-card farmer" onclick="filterDue('farmer', this)">
-    <div class="icon">🌾</div>
-    <div class="title">Farmer</div>
-  </div>
+        <div class="due-voucher-card farmer" onclick="filterDue('farmer', this)">
+          <div class="icon">🌾</div>
+          <div class="title">Farmer</div>
+        </div>
 
-  <div class="due-voucher-card mill" onclick="filterDue('mill', this)">
-    <div class="icon">🏭</div>
-    <div class="title">Mill</div>
-  </div>
+        <div class="due-voucher-card mill" onclick="filterDue('mill', this)">
+          <div class="icon">🏭</div>
+          <div class="title">Mill</div>
+        </div>
 
-  <div class="due-voucher-card transport" onclick="filterDue('transport', this)">
-    <div class="icon">🚛</div>
-    <div class="title">Transport</div>
-  </div>
-
-</div>
-  <!-- TABLE -->
-  <div class="due-table-wrapper">
-    <table>
-      <thead>
-        <tr>
-          <th>Party ID</th>
-          <th>Name</th>
-          <th>Voucher</th>
-          <th>Amount</th>
-          <th>Status</th>
-        </tr>
-      </thead>
-      <tbody id="dueTable">
-        <tr>
-          <td colspan="5">Loading...</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
+        <div class="due-voucher-card trader" onclick="filterDue('trader', this)">
+  <div class="icon">🏪</div>
+  <div class="title">Trader</div>
 </div>
 
-  <script src="js/api.js"></script>
-  <script src="js/payments.js"></script>
+        <div class="due-voucher-card transport" onclick="filterDue('transport', this)">
+          <div class="icon">🚛</div>
+          <div class="title">Transport</div>
+        </div>
+
+      </div>
+      <!-- TABLE -->
+      <div class="due-table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Party ID</th>
+              <th>Name</th>
+              <th>Voucher</th>
+              <th>Amount</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="dueTable">
+            <tr>
+              <td colspan="5">Loading...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/payments.js"></script>
 </body>
 
 </html>

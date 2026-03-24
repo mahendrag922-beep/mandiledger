@@ -27,9 +27,10 @@ exports.createReceiptVoucher = async (data, conn) => {
   unloading_charges ,
   brokerage_commission ,
   quality_claim ,
+  transport_charges,
   bank_charges ,
   final_received_amount, created_by)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?,?,?,?)`,
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?,?,?,?,?)`,
     [
       data.receipt_voucher_no,
       data.mill_id,
@@ -43,6 +44,7 @@ exports.createReceiptVoucher = async (data, conn) => {
       data.unloading_charges ,
       data.brokerage_commission ,
       data.quality_claim ,
+      data.transport_charges,
       data.bank_charges ,
       data.final_received_amount,
       data.created_by

@@ -9,14 +9,15 @@ exports.addLedgerEntry = async ({
   debit = 0,
   credit = 0,
   referenceId,
+  date,
   conn
 }) => {
 
   await conn.query(
     `INSERT INTO ledger_entries
-     (party_id, voucher_no, receiptNo,reference_type, entry_type, debit, credit, reference_id)
-     VALUES (?, ?, ?, ?, ?, ?,?, ?)`,
-    [partyId, voucherNo, receiptNo,referenceType, entryType, debit, credit, referenceId]
+     (party_id, voucher_no, receiptNo,reference_type, entry_type, debit, credit, reference_id,created_at)
+     VALUES (?, ?, ?, ?, ?, ?,?, ?,?)`,
+    [partyId, voucherNo, receiptNo,referenceType, entryType, debit, credit, referenceId,date || new Date() ]
   );
 
   // Recalculate balance

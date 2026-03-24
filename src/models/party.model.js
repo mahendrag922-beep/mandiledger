@@ -1,5 +1,5 @@
 const pool = require("../config/db");
-
+const AppError = require("../utils/AppError");
 exports.createParty = async (data) => {
   const {
     name,
@@ -26,20 +26,51 @@ exports.createParty = async (data) => {
 
   // 2️⃣ Insert party
   const [result] = await pool.query(
-  `INSERT INTO parties
-   (name, party_type, mobile, address, gstn, company_name, state,district, pincode)
-   VALUES (?, ?, ?, ?, ?, ?,?, ?, ?)`,
-  [
-    name,
-    party_type,
-    party_type === "farmer" ? mobile || null : null,
-    address || null,
-    party_type === "mill" ? gstn || null : null,
-    party_type === "mill" ? company_name || null : null,
-    party_type === "mill" ? state || null : null,
-    party_type === "mill" ? district || null : null,
-    party_type === "mill" ? pincode || null : null
-  ]
+`INSERT INTO parties
+(name, party_type, mobile, address, gstn, pan, company_name, state, district, pincode)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+[
+  name,
+  party_type,
+
+  // mobile
+  party_type === "farmer" || party_type === "trader"
+    ? mobile || null
+    : null,
+
+  // address
+  address || null,
+
+  // gst
+  party_type === "mill" || party_type === "trader"
+    ? gstn || null
+    : null,
+
+  // pan
+  party_type === "trader"
+    ? data.pan || null
+    : null,
+
+  // company
+  party_type === "mill" || party_type === "trader"
+    ? company_name || null
+    : null,
+
+  // state
+  party_type === "mill" || party_type === "trader"
+    ? state || null
+    : null,
+
+  // district
+  party_type === "mill" || party_type === "trader"
+    ? district || null
+    : null,
+
+  // pincode
+  party_type === "mill" || party_type === "trader"
+    ? pincode || null
+    : null
+]
 );
   return result.insertId;
 };

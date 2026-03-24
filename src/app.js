@@ -22,6 +22,8 @@ app.use("/api/vouchers", require("./routes/voucher.routes"));
 app.use("/api/banks", require("./routes/bank.routes"));
 app.use("/api/cash", require("./routes/cash.routes"));
 app.use("/api/payments", require("./routes/payment.routes"));
+app.use("/api", require("./routes/employee.routes"));
+app.use("/api", require("./routes/expense.routes"));
 app.use(errorHandler);
 
 module.exports = app;

@@ -91,6 +91,7 @@ exports.addPayment = async (req, res) => {
     unloading_charges = 0,
     brokerage_commission = 0,
     quality_claim = 0,
+    transport_charges = 0,
     bank_charges = 0
   } = req.body;
 
@@ -137,52 +138,297 @@ if (req.user && req.user.id) {
 
     if (partyType === "mill" && direction === "received") {
 
-      const totalDeductions =
-        Number(case_discount) +
-        Number(weight_shortage) +
-        Number(unloading_charges) +
-        Number(brokerage_commission) +
-        Number(quality_claim) +
-        Number(bank_charges);
+  const totalDeductions =
+  Number(case_discount) +
+  Number(weight_shortage) +
+  Number(unloading_charges) +
+  Number(brokerage_commission) +
+  Number(quality_claim) +
+  Number(bank_charges);
 
-      const finalReceivedAmount =
-        Number(amount) - totalDeductions;
 
-      if (!bank_id) throw new Error("Select bank");
+  const finalReceivedAmount =
+    Number(amount) - totalDeductions;
 
-      await conn.query(
-        `UPDATE banks SET balance = balance + ? WHERE id=?`,
-        [finalReceivedAmount, bank_id]
-      );
+  if (!bank_id) throw new Error("Select bank");
 
-      await conn.query(
-        `INSERT INTO bank_entries
-         (bank_id, voucher_no, mill_name, total_amount, remaining_amount)
-         VALUES (?, ?, ?, ?, ?)`,
-        [bank_id, voucher_no, party_name, finalReceivedAmount, finalReceivedAmount]
-      );
+  /* ===============================
+     ADD MONEY TO BANK
+  =============================== */
 
-      const receiptNo =
-        await VoucherReceiptController.createVoucherReceipt({
-          mill: party,
-          saleVoucherNo: voucher_no,
-          bankName: bank.bank_name,
-          amount,
-          final_received_amount: finalReceivedAmount,
-          createdBy: "Admin",
-          conn
-        });
+  await conn.query(
+    `UPDATE banks SET balance = balance + ? WHERE id=?`,
+    [finalReceivedAmount, bank_id]
+  );
 
-      await addLedgerEntry({
-        partyId: party_id,
-        voucherNo: voucher_no,
-        receiptNo: receiptNo,
-        referenceType: "receipt",
-        entryType: "payment-received",
-        debit: 0,
-        credit: amount,
-        conn
-      });
+  await conn.query(
+    `INSERT INTO bank_entries
+     (bank_id, voucher_no, mill_name, total_amount, remaining_amount)
+     VALUES (?, ?, ?, ?, ?)`,
+    [
+      bank_id,
+      voucher_no,
+      party_name,
+      finalReceivedAmount,
+      finalReceivedAmount
+    ]
+  );
+
+  /* ===============================
+     INSERT MILL ADJUSTMENT EXPENSE
+  =============================== */
+
+  if (totalDeductions > 0) {
+
+    const [[cat]] = await conn.query(
+      `SELECT id FROM expense_categories
+       WHERE name='Mill Adjustment' LIMIT 1`
+    );
+
+    const categoryId = cat.id;
+
+    const [[last]] = await conn.query(`
+      SELECT expense_id
+      FROM expenses
+      ORDER BY id DESC
+      LIMIT 1
+    `);
+
+    let expenseId = "EXP-0001";
+
+    if (last && last.expense_id) {
+
+      const num =
+        parseInt(last.expense_id.split("-")[1]) + 1;
+
+      expenseId =
+        "DEX-" + String(num).padStart(4, "0");
+    }
+
+    await conn.query(`
+      INSERT INTO expenses
+      (expense_id,
+       expense_type,
+       category_id,
+       expense_date,
+       voucher_no,
+       party_name,
+       amount,
+       payment_type)
+
+      VALUES (?, ?, ?, NOW(), ?, ?, ?, ?)
+    `,
+    [
+      expenseId,
+      "DIRECT",
+      categoryId,
+      voucher_no,
+      party_name,
+      totalDeductions,
+      "company"
+    ]);
+
+    /* UPDATE CATEGORY TOTAL */
+
+    await conn.query(`
+      UPDATE expense_categories
+      SET total = COALESCE(total,0) + ?
+      WHERE id=?
+    `,
+    [totalDeductions, categoryId]);
+  };
+
+  /* ===============================
+   INSERT TRANSPORT CHARGE EXPENSE
+================================ */
+
+if (Number(transport_charges) > 0) {
+
+  // get transport voucher first
+  const [[transportRow]] = await conn.query(
+    `SELECT transport_voucher_no
+     FROM transport_history
+     WHERE sale_voucher_no = ?
+     LIMIT 1`,
+    [voucher_no]
+  );
+
+  const transportVoucher =
+    transportRow?.transport_voucher_no || voucher_no;
+
+  const [[cat]] = await conn.query(
+    `SELECT id FROM expense_categories
+     WHERE name='Transport Charge'
+     LIMIT 1`
+  );
+
+  const categoryId = cat.id;
+
+  const [[last]] = await conn.query(`
+    SELECT expense_id
+    FROM expenses
+    ORDER BY id DESC
+    LIMIT 1
+  `);
+
+  let expenseId = "EXP-0001";
+
+  if (last && last.expense_id) {
+
+    const num =
+      parseInt(last.expense_id.split("-")[1]) + 1;
+
+    expenseId =
+      "DEX-" + String(num).padStart(4, "0");
+  }
+
+  await conn.query(`
+    INSERT INTO expenses
+    (expense_id,
+     expense_type,
+     category_id,
+     expense_date,
+     voucher_no,
+     party_name,
+     amount,
+     payment_type)
+
+    VALUES (?, 'DIRECT', ?, NOW(), ?, ?, ?, 'company')
+  `, [
+    expenseId,
+    categoryId,
+    transportVoucher,
+    party_name,
+    transport_charges
+  ]);
+
+  await conn.query(`
+    UPDATE expense_categories
+    SET total = COALESCE(total,0) + ?
+    WHERE id=?
+  `,[transport_charges, categoryId]);
+
+};
+  /* ===============================
+     CREATE RECEIPT VOUCHER
+  =============================== */
+
+  const receiptNo =
+    await VoucherReceiptController.createVoucherReceipt({
+      mill: party,
+      saleVoucherNo: voucher_no,
+      bankName: bank.bank_name,
+      amount,
+      case_discount,
+      weight_shortage,
+      unloading_charges,
+      brokerage_commission,
+      quality_claim,
+      transport_charges,
+      bank_charges,
+      final_received_amount: finalReceivedAmount,
+      createdBy: createdBy,
+      conn
+    });
+
+  await addLedgerEntry({
+    partyId: party_id,
+    voucherNo: voucher_no,
+    receiptNo: receiptNo,
+    referenceType: "receipt",
+    entryType: "payment-received",
+    debit: 0,
+    credit: amount,
+    conn
+  });
+
+
+    
+      // =====================================================
+// 🚛 AUTO TRANSPORT SETTLEMENT (FROM MILL DEDUCTION)
+// =====================================================
+
+if (Number(transport_charges) > 0) {
+
+  const [[transportRow]] = await conn.query(
+    `SELECT *
+     FROM transport_history
+     WHERE sale_voucher_no = ?
+     LIMIT 1`,
+    [voucher_no]
+  );
+
+  if (!transportRow) {
+    console.log("Transport voucher not found for sale:", voucher_no);
+  } else {
+
+    const newRemaining =
+      Number(transportRow.remaining_payment || 0) -
+      Number(transport_charges);
+
+    const newStatus =
+      newRemaining <= 0
+        ? "full paid"
+        : "partial paid";
+
+    await conn.query(
+      `UPDATE transport_history
+       SET remaining_payment = ?,
+           payment_status = ?
+       WHERE id = ?`,
+      [Math.max(newRemaining, 0), newStatus, transportRow.id]
+    );
+
+    const [[lastPay]] = await conn.query(
+      `SELECT payment_no
+       FROM transport_payment_history
+       ORDER BY id DESC LIMIT 1`
+    );
+
+    let paymentNo = "TP-0001";
+
+    if (lastPay) {
+      const num =
+        parseInt(lastPay.payment_no.split("-")[1]) + 1;
+      paymentNo = "TP-" + String(num).padStart(4, "0");
+    }
+
+    await conn.query(`
+      INSERT INTO transport_payment_history
+      (transport_id,
+       transport_voucher_no,
+       payment_no,
+       payment_type,
+       amount,
+       created_by)
+      VALUES (?,?,?,?,?,?)
+    `, [
+      transportRow.transport_id,
+      transportRow.transport_voucher_no,
+      paymentNo,
+      "company",
+      transport_charges,
+      createdBy
+    ]);
+
+    // first fetch correct party id
+const [[transportParty]] = await conn.query(
+  `SELECT party_id FROM transports WHERE id=?`,
+  [transportRow.transport_id]
+);
+
+await addLedgerEntry({
+  partyId: transportParty.party_id,   // ✅ correct party id
+  voucherNo: transportRow.transport_voucher_no,
+  receiptNo: paymentNo,
+  referenceType: "transport-company-payment",
+  entryType: "freight-paid-by-company",
+  debit: 0,
+  credit: transport_charges,
+  conn
+});
+  }
+}
     }
 
     /* ===================================================== */
@@ -207,7 +453,7 @@ if (req.user && req.user.id) {
           purchaseVoucherNo: voucher_no,
           paymentType: payment_type,
           amount,
-          createdBy: "Admin",
+          createdBy: createdBy,
           conn
         });
 
@@ -222,6 +468,40 @@ if (req.user && req.user.id) {
         conn
       });
     }
+
+   else if (partyType === "trader" && direction === "paid") {
+
+  await handleOutgoingPayment({
+    conn,
+    party_id,
+    voucher_no,
+    amount,
+    payment_type,
+    source_id,
+    bank_id
+  });
+
+  const paymentNo =
+    await VoucherPaymentController.createVoucherPayment({
+      party,
+      purchaseVoucherNo: voucher_no,
+      paymentType: payment_type,
+      amount,
+      createdBy: createdBy,
+      conn
+    });
+
+  await addLedgerEntry({
+    partyId: party_id,
+    voucherNo: voucher_no,
+    receiptNo: paymentNo,
+    referenceType: "payment",
+    entryType: "payment-paid",
+    debit: 0,
+    credit: amount,
+    conn
+  });
+}
 
     
     /* ===================================================== */
@@ -323,6 +603,68 @@ else if (partyType === "transport" && direction === "paid") {
     credit: amount,
     conn
   });
+
+/* ===============================
+   INSERT DIRECT EXPENSE
+   TRANSPORT PAYMENT BY TRADER
+================================ */
+
+const [[cat]] = await conn.query(
+  `SELECT id FROM expense_categories
+   WHERE name='Transport Charge'
+   LIMIT 1`
+);
+
+const categoryId = cat.id;
+
+const [[last]] = await conn.query(`
+  SELECT expense_id
+  FROM expenses
+  ORDER BY id DESC
+  LIMIT 1
+`);
+
+let expenseId = "EXP-0001";
+
+if (last && last.expense_id) {
+
+  const num =
+    parseInt(last.expense_id.split("-")[1]) + 1;
+
+  expenseId =
+    "DEX-" + String(num).padStart(4, "0");
+}
+
+await conn.query(`
+INSERT INTO expenses
+(expense_id,
+expense_type,
+category_id,
+expense_date,
+voucher_no,
+party_name,
+amount,
+payment_type,
+cash_id,
+bank_entry_id,
+bank_name)
+
+VALUES (?,?,?,?,?,?,?,?,?,?,?)
+`,
+[
+expenseId,
+"DIRECT",
+categoryId,
+new Date(),
+voucher_no, // transport voucher
+party.name,
+amount,
+payment_type,
+payment_type === "cash" ? source_id : null,
+payment_type === "bank" ? source_id : null,
+payment_type === "bank" ? bank.bank_name : null
+]);
+
 }
     else {
       throw new Error("Invalid payment type/direction");

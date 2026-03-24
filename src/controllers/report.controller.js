@@ -30,10 +30,18 @@ exports.dailyReport = async (req, res) => {
   });
 };
 
+
+/* =========================================
+   OUTSTANDING REPORT
+========================================= */
+
 exports.outstandingReport = async (req, res) => {
   try {
 
-    // 🔵 Farmer + Mill (Ledger Based)
+    /* ======================================
+       FARMER + MILL + TRADER (LEDGER BASED)
+    ====================================== */
+
     const [ledgerRows] = await pool.query(`
       SELECT 
         p.id AS party_id,
@@ -45,24 +53,28 @@ exports.outstandingReport = async (req, res) => {
         (SUM(l.debit) - SUM(l.credit)) AS balance
       FROM ledger_entries l
       JOIN parties p ON p.id = l.party_id
-      WHERE p.party_type IN ('farmer','mill')
+      WHERE p.party_type IN ('farmer','mill','trader')
       GROUP BY p.id, l.voucher_no
       HAVING balance > 0
     `);
 
-    // 🔴 Transport (Use Remaining Payment)
+    /* ======================================
+       TRANSPORT (REMAINING PAYMENT BASED)
+    ====================================== */
+
     const [transportRows] = await pool.query(`
-  SELECT
-    p.id AS party_id,
-    p.name,
-    'transport' AS party_type,
-    t.transport_voucher_no AS voucher_no,
-    t.remaining_payment AS balance
-  FROM transport_history t
-  JOIN transports tr ON tr.id = t.transport_id
-  JOIN parties p ON p.id = tr.party_id
-  WHERE t.remaining_payment > 0
-`);
+      SELECT
+        p.id AS party_id,
+        p.name,
+        'transport' AS party_type,
+        t.transport_voucher_no AS voucher_no,
+        t.remaining_payment AS balance
+      FROM transport_history t
+      JOIN transports tr ON tr.id = t.transport_id
+      JOIN parties p ON p.id = tr.party_id
+      WHERE t.remaining_payment > 0
+    `);
+
     res.json({
       status: "success",
       data: [...ledgerRows, ...transportRows]
@@ -74,6 +86,10 @@ exports.outstandingReport = async (req, res) => {
   }
 };
 
+
+/* =========================================
+   PROFIT REPORT
+========================================= */
 
 exports.profitReport = async (req, res) => {
   const [[result]] = await pool.query(
@@ -88,12 +104,18 @@ exports.profitReport = async (req, res) => {
     data: result
   });
 };
+
+
+/* =========================================
+   TODAY PURCHASES
+========================================= */
+
 exports.todayPurchases = async (req, res, next) => {
   const [rows] = await pool.query(`
     SELECT 
       p.created_at,
       pr.name AS party,
-      p.final_amount
+      p.total_final_amount
     FROM voucher_purchase p
     JOIN parties pr ON pr.id = p.party_id
     WHERE p.created_at >= CURDATE()
@@ -105,6 +127,11 @@ exports.todayPurchases = async (req, res, next) => {
 
   res.json({ status: "success", data: rows });
 };
+
+
+/* =========================================
+   TODAY SALES
+========================================= */
 
 exports.todaySales = async (req, res, next) => {
   const [rows] = await pool.query(`
@@ -124,3 +151,30 @@ exports.todaySales = async (req, res, next) => {
   res.json({ status: "success", data: rows });
 };
 
+
+/* =========================================
+   DASHBOARD COUNTS
+========================================= */
+
+exports.dashboardCounts = async (req, res) => {
+
+  const [[purchase]] = await pool.query(`
+    SELECT COUNT(*) AS total
+    FROM voucher_purchase
+    WHERE is_reversed = 0
+  `);
+
+  const [[sale]] = await pool.query(`
+    SELECT COUNT(*) AS total
+    FROM voucher_sale
+    WHERE is_reversed = 0
+  `);
+
+  res.json({
+    status: "success",
+    data: {
+      purchaseCount: purchase.total,
+      saleCount: sale.total
+    }
+  });
+};

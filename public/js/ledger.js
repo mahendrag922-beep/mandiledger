@@ -4,6 +4,7 @@ async function loadParties() {
   const data = await res.json();
 
   const farmerSelect = document.getElementById("farmerSelect");
+  const traderSelect = document.getElementById("traderSelect");
   const millSelect = document.getElementById("millSelect");
 
   data.data.forEach(p => {
@@ -13,6 +14,9 @@ async function loadParties() {
 
     if (p.party_type === "farmer" || p.party_type === "both") {
       farmerSelect.appendChild(opt.cloneNode(true));
+    }
+    if (p.party_type === "trader") {
+        traderSelect.appendChild(opt.cloneNode(true));
     }
     if (p.party_type === "mill" || p.party_type === "both") {
       millSelect.appendChild(opt.cloneNode(true));
@@ -38,6 +42,9 @@ async function loadLedger(type) {
 
 if (type === "farmer")
   select = document.getElementById("farmerSelect");
+
+if (type === "trader")
+select = document.getElementById("traderSelect");
 
 if (type === "mill")
   select = document.getElementById("millSelect");
@@ -79,6 +86,25 @@ if (type === "farmer") {
   // Table headers
   document.getElementById("thDebit").innerText = "Purchase";
   document.getElementById("thCredit").innerText = "Paid";
+}
+
+if (type === "trader") {
+
+document.getElementById("labelDebit").innerText =
+"Total Purchase";
+
+document.getElementById("labelCredit").innerText =
+"Amount Paid";
+
+document.getElementById("labelBalance").innerText =
+"Remaining Balance";
+
+document.getElementById("thDebit").innerText =
+"Purchase";
+
+document.getElementById("thCredit").innerText =
+"Paid";
+
 }
 
 if (type === "mill") {

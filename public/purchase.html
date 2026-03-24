@@ -29,150 +29,208 @@
     <!-- LEFT FORM -->
     <div class="purchase-form">
 
-  <h2>📥 Purchase Entry (Farmer)</h2>
+      <h2>📥 Purchase Entry (Farmer)</h2>
 
-  <!-- ================= STEP BUTTONS ================= -->
-  <div class="voucher-steps">
+      <!-- ================= STEP BUTTONS ================= -->
+      <div class="voucher-steps">
 
-    <div class="voucher-card active" onclick="openSection('farmerSection', this)">
-      <div class="icon">👤</div>
-      <div class="title">Farmer Detail</div>
-    </div>
-
-    <div class="voucher-card" onclick="openSection('commoditySection', this)">
-      <div class="icon">🌾</div>
-      <div class="title">Commodity</div>
-    </div>
-
-    <div class="voucher-card" onclick="openSection('extraSection', this)">
-      <div class="icon">🚛</div>
-      <div class="title">Extra Detail</div>
-    </div>
-
-    <div class="voucher-card save-card" onclick="openSection('saveSection',this)">
-    <div class="icon">💾</div>
-    <div class="title">Save</div>
-  </div>
-
-  </div>
-
-  <!-- ================= FARMER SECTION ================= -->
-  <div id="farmerSection" class="form-section active-section">
-
-    <label>Farmer</label>
-    <input id="farmerSearch" placeholder="Search farmer by name">
-    <div id="farmerList" class="dropdown"></div>
-    <input type="hidden" id="party_id">
-
-    <div class="row">
-      <div>
-        <label>Mobile</label>
-        <input id="farmer_mobile" disabled>
-      </div>
-      <div>
-        <label>Address</label>
-        <input id="farmer_address" disabled>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- ================= COMMODITY SECTION ================= -->
-  <div id="commoditySection" class="form-section">
-
-    <div class="add-commodity-card" onclick="showCommodityForm()">
-  <div class="add-icon">➕</div>
-  <div class="add-text">
-    <strong>Add Commodity</strong>
-    <small>Click to add item details</small>
-  </div>
-</div>
-    <div id="commodityForm" style="display:none; margin-top:15px; border:1px solid #ddd; padding:15px; border-radius:8px;">
-
-      <div class="row">
-        <div>
-          <label>Commodity</label>
-          <select id="commodity" onchange="selectCommodity(this.value)">
-            <option value="">Select Commodity</option>
-          </select>
+        <div class="voucher-card active" onclick="openSection('farmerSection', this)">
+          <div class="icon">👤</div>
+          <div class="title">Farmer Detail</div>
         </div>
-        <div>
-          <label>HSN NO</label>
-          <input type="text" id="hsn_no" readonly>
+
+        <div class="voucher-card" onclick="openSection('commoditySection', this)">
+          <div class="icon">🌾</div>
+          <div class="title">Commodity</div>
+        </div>
+
+        <div class="voucher-card" onclick="openSection('extraSection', this)">
+          <div class="icon">🚛</div>
+          <div class="title">Extra Detail</div>
+        </div>
+
+        <div class="voucher-card save-card" onclick="openSection('saveSection',this)">
+          <div class="icon">💾</div>
+          <div class="title">Save</div>
+        </div>
+
+      </div>
+
+      <!-- ================= FARMER SECTION ================= -->
+      <div id="farmerSection" class="form-section active-section">
+
+        <label>Farmer</label>
+        <input id="farmerSearch" placeholder="Search farmer by name">
+        <div id="farmerList" class="dropdown"></div>
+        <input type="hidden" id="party_id">
+
+        <div class="row">
+          <div>
+            <label>Purchase Date</label>
+            <input type="date" id="purchaseDate">
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label>Mobile</label>
+            <input id="farmer_mobile" disabled>
+          </div>
+
+          <div>
+            <label>Address</label>
+            <input id="farmer_address" disabled>
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label>GST No</label>
+            <input id="party_gst" disabled>
+          </div>
+
+          <div>
+            <label>PAN No</label>
+            <input id="party_pan" disabled>
+          </div>
         </div>
       </div>
 
-      <div class="row">
-        <div>
-          <label>No of Bags</label>
-          <input id="bags" type="number">
+      <!-- ================= COMMODITY SECTION ================= -->
+      <div id="commoditySection" class="form-section">
+
+        <div class="add-commodity-card" onclick="showCommodityForm()">
+          <div class="add-icon">➕</div>
+          <div class="add-text">
+            <strong>Add Commodity</strong>
+            <small>Click to add item details</small>
+          </div>
         </div>
-        <div>
-          <label>Wajan Dhalta (Gram per Bag)</label>
-          <input id="wajan_dhalta_input" type="number">
+        <div id="commodityForm"
+          style="display:none; margin-top:15px; border:1px solid #ddd; padding:15px; border-radius:8px;">
+
+          <div class="row">
+            <div>
+              <label>Commodity</label>
+              <select id="commodity" onchange="selectCommodity(this.value)">
+                <option value="">Select Commodity</option>
+              </select>
+            </div>
+            <div>
+              <label>HSN NO</label>
+              <input type="text" id="hsn_no" readonly>
+            </div>
+          </div>
+
+          <div class="row">
+            <div>
+              <label>No of Bags</label>
+              <input id="bags" type="number">
+            </div>
+            <div>
+              <label>Wajan Dhalta (Gram per Bag)</label>
+              <input id="wajan_dhalta_input" type="number">
+            </div>
+          </div>
+
+          <div class="row">
+            <div>
+              <label>Quintal</label>
+              <input id="quintal" type="number">
+            </div>
+            <div>
+              <label>Kg</label>
+              <input id="kg" type="number">
+            </div>
+          </div>
+
+          <div class="row">
+            <div>
+              <label>Rate (₹ / Kg)</label>
+              <input id="rate" type="number">
+            </div>
+            <div>
+              <label>Mandi Commission (%)</label>
+              <input id="commission" type="number">
+            </div>
+          </div>
+
+          <button type="button" onclick="addCommodityItem()">Add</button>
+
         </div>
+
+        <hr>
+        <h4>Added Commodities</h4>
+        <div id="commoditySummary"></div>
+
       </div>
 
-      <div class="row">
-        <div>
-          <label>Quintal</label>
-          <input id="quintal" type="number">
+      <!-- ================= EXTRA DETAIL SECTION ================= -->
+      <div id="extraSection" class="form-section">
+
+        <div class="row">
+          <div>
+            <label>Unloading Charge (₹)</label>
+            <input id="unloadingCharge" type="number" value="0" oninput="renderSummary()">
+          </div>
         </div>
-        <div>
-          <label>Kg</label>
-          <input id="kg" type="number">
+        <div class="row">
+
+          <div>
+            <label>Payment Type</label>
+
+            <select id="unloadPaymentType" onchange="toggleUnloadPayment()">
+
+              <option value="">Select</option>
+              <option value="cash">Cash</option>
+              <option value="bank">Bank</option>
+
+            </select>
+
+          </div>
+
         </div>
-      </div>
 
-      <div class="row">
-        <div>
-          <label>Rate (₹ / Kg)</label>
-          <input id="rate" type="number">
+
+        <div id="unloadCashSection" style="display:none">
+
+          <label>Select Cash ID</label>
+
+          <select id="unloadCashId"></select>
+
         </div>
-        <div>
-          <label>Mandi Commission (%)</label>
-          <input id="commission" type="number">
+
+
+        <div id="unloadBankSection" style="display:none">
+
+          <label>Select Bank</label>
+
+          <select id="unloadBankId" onchange="loadUnloadBankEntries()"></select>
+
+          <label>Select Bank Entry</label>
+
+          <select id="unloadBankEntryId"></select>
+
         </div>
+
+        <div class="row">
+          <div>
+            <label>Vehicle No</label>
+            <input id="vehicle_no" placeholder="UP32 AB 1234">
+          </div>
+          <div>
+            <label>Gaddi No</label>
+            <input id="gaddiNo" placeholder="Enter Gaddi No">
+          </div>
+        </div>
+
       </div>
-
-      <button type="button" onclick="addCommodityItem()">Add</button>
-
-    </div>
-
-    <hr>
-    <h4>Added Commodities</h4>
-    <div id="commoditySummary"></div>
-
-  </div>
-
-  <!-- ================= EXTRA DETAIL SECTION ================= -->
-  <div id="extraSection" class="form-section">
-
-    <div class="row">
-      <div>
-        <label>Unloading Charge (₹)</label>
-        <input id="unloadingCharge" type="number" value="0" oninput="renderSummary()">
-      </div>
-    </div>
-
-    <div class="row">
-      <div>
-        <label>Vehicle No</label>
-        <input id="vehicle_no" placeholder="UP32 AB 1234">
-      </div>
-      <div>
-        <label>Gaddi No</label>
-        <input id="gaddiNo" placeholder="Enter Gaddi No">
-      </div>
-    </div>
-
-  </div>
- <!-- ================= STEP 5 ================= -->
-      <div class="form-section" id="saveSection" >
+      <!-- ================= STEP 5 ================= -->
+      <div class="form-section" id="saveSection">
         <button class="btn-save" onclick="savePurchase()">💾 Save Purchase Voucher</button>
       </div>
 
-</div>
+    </div>
     <!-- RIGHT SUMMARY -->
     <div class="purchase-summary">
 

@@ -44,7 +44,22 @@ function renderLedger(rows, partyType) {
     document.getElementById("received").innerText =
       "₹ " + totalCredit.toFixed(2);
 
-  } else if (partyType === "mill") {
+  } else if (partyType === "trader") {
+
+    document.getElementById("leftLabel").innerText = "Total Purchase";
+    document.getElementById("rightLabel").innerText = "Total Payment";
+
+    // Values
+    document.getElementById("payable").innerText =
+      "₹ " + totalDebit.toFixed(2);
+
+    document.getElementById("received").innerText =
+      "₹ " + totalCredit.toFixed(2);
+
+
+  }
+
+  else if (partyType === "mill") {
     document.getElementById("leftLabel").innerText = "Total Sale";
     document.getElementById("rightLabel").innerText = "Total Received";
 
@@ -186,6 +201,23 @@ async function saveParty() {
     payload.address = address.value.trim();
   }
 
+  // trader
+  // 🧑‍💼 Trader
+  if (type === "trader") {
+
+    payload.mobile =
+      document.getElementById("traderMobile").value.trim();
+
+    payload.gstn =
+      document.getElementById("traderGST").value.trim();
+
+    payload.pan =
+      document.getElementById("pan").value.trim();
+
+    payload.address =
+      document.getElementById("traderAddress").value.trim();
+  }
+
   // 🏭 Mill
   if (type === "mill") {
     const gstn = document.getElementById("gstn").value.trim();
@@ -202,17 +234,17 @@ async function saveParty() {
       document.getElementById("companyAddress").value.trim();
     payload.state =
       document.getElementById("state").value.trim();
-      payload.district =
+    payload.district =
       document.getElementById("district").value.trim();
 
     const pin = document.getElementById("pincode").value.trim();
 
-if (!/^[0-9]{6}$/.test(pin)) {
-  alert("Invalid pincode");
-  return;
-}
+    if (!/^[0-9]{6}$/.test(pin)) {
+      alert("Invalid pincode");
+      return;
+    }
 
-payload.pincode = pin; // KEEP AS STRING
+    payload.pincode = pin; // KEEP AS STRING
 
   }
 
@@ -230,7 +262,9 @@ payload.pincode = pin; // KEEP AS STRING
 
   closeAddParty();
   await loadParties();
-}
+};
+
+
 
 async function deleteParty(id) {
   if (!confirm("Deactivate this party?")) return;
@@ -247,8 +281,10 @@ function togglePartyFields() {
 
   document.getElementById("millFields").style.display =
     type === "mill" ? "block" : "none";
-}
 
+  document.getElementById("traderFields").style.display =
+    type === "trader" ? "block" : "none";
+};
 
 async function loadFarmerDetails(partyId) {
   try {
@@ -277,7 +313,43 @@ async function loadFarmerDetails(partyId) {
   } catch (err) {
     console.error("Farmer popup error:", err);
   }
-}
+};
+
+async function loadTraderDetails(partyId) {
+
+  const modal = document.getElementById("traderModal");
+
+  const res = await api(`/parties/${partyId}`);
+  if (!res.ok) return;
+
+  const d = await res.json();
+  if (!d.data) return;
+
+  document.getElementById("tmName").innerText =
+    d.data.name || "-";
+
+  document.getElementById("tmMobile").innerText =
+    d.data.mobile || "-";
+
+  document.getElementById("tmGSTN").innerText =
+    d.data.gstn || "-";
+
+  document.getElementById("tmPAN").innerText =
+    d.data.pan || "-";
+
+  document.getElementById("tmAddress").innerText =
+    d.data.address || "-";
+
+  modal.style.display = "flex";
+};
+
+
+function closeTraderModal() {
+  const modal = document.getElementById("traderModal");
+  if (modal) modal.style.display = "none";
+};
+
+
 async function loadMillDetails(partyId) {
   const modal = document.getElementById("millModal");
 
@@ -334,13 +406,12 @@ function isValidGSTN(gstn) {
     /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
 
   return gstRegex.test(gstn);
-}
+};
 function openPartyPopup(partyId, partyType) {
+
   if (!partyType) return;
 
   const type = partyType.toLowerCase().trim();
-
-  console.log("POP CLICK:", partyId, type); // DEBUG
 
   if (type === "farmer") {
     loadFarmerDetails(partyId);
@@ -349,7 +420,11 @@ function openPartyPopup(partyId, partyType) {
   if (type === "mill") {
     loadMillDetails(partyId);
   }
-}
 
+  if (type === "trader") {
+    loadTraderDetails(partyId);
+  }
+
+};
 
 loadParties();

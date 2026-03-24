@@ -20,18 +20,20 @@ exports.createVoucherPayment = async ({
      ${party.state} - ${party.pincode}`;
 
   await VoucherPayment.createPaymentVoucher({
-    payment_voucher_no: paymentNo,
-    party_id: party.id,
-    party_name: party.name,
-    address: fullAddress,
-    purchase_voucher_no: purchaseVoucherNo,
-    payment_type: paymentType,
-    cash_id: cashId,
-    bank_name: bankName,
-    bank_entry_id: bankEntryId,
-    amount,
-    created_by: createdBy
-  }, conn);
+  payment_voucher_no: paymentNo,
+  party_id: party.id,
+  party_name: party.name,
+  gst_no: party.gstn || null,
+  address: fullAddress,
+  purchase_voucher_no: purchaseVoucherNo,
+  payment_type: paymentType,
+  cash_id: cashId,
+  bank_name: bankName,
+  bank_entry_id: bankEntryId,
+  amount,
+  created_by: createdBy
+}, conn);
 
   return paymentNo;
 };
+

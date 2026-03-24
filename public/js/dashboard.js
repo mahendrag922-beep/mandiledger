@@ -1,27 +1,23 @@
 (async function () {
 
-  /* STOCK */
- /* STOCK (COMMODITY-WISE) */
-const stockRes = await api("/stock");
-const stockData = await stockRes.json();
+async function loadDashboardCounts() {
+  const res = await api("/reports/dashboard-counts");
 
-let paddyQty = 0;
-let wheatQty = 0;
+  if (!res.ok) {
+    console.error("Dashboard count API failed");
+    return;
+  }
 
-stockData.data.forEach(s => {
-  const qty = Number(s.quantity) || 0;
+  const data = await res.json();
 
-  if (s.commodity === "paddy") paddyQty = qty;
-  if (s.commodity === "wheat") wheatQty = qty;
-});
+  document.getElementById("purchaseCount").innerText =
+    data.data.purchaseCount || 0;
 
-document.getElementById("paddyStock").innerText =
-  `${paddyQty.toFixed(2)} Qtl`;
+  document.getElementById("saleCount").innerText =
+    data.data.saleCount || 0;
+}
 
-document.getElementById("wheatStock").innerText =
-  `${wheatQty.toFixed(2)} Qtl`;
-
-  /* PROFIT (Trader only) */
+/* PROFIT (Trader only) */
   if (localStorage.getItem("role") === "trader") {
   const pRes = await api("/reports/profit");
   const pData = await pRes.json();
@@ -125,7 +121,7 @@ async function loadLatestPurchases() {
       <tr>
         <td>${new Date(p.created_at).toLocaleTimeString()}</td>
         <td>${p.party}</td>
-        <td>₹ ${Number(p.final_amount).toFixed(2)}</td>
+        <td>₹ ${Number(p.total_final_amount).toFixed(2)}</td>
       </tr>
     `;
   });
@@ -157,5 +153,6 @@ async function loadLatestSales() {
 loadOutstanding();
 loadLatestPurchases();
 loadLatestSales();
+loadDashboardCounts();
 
 })();

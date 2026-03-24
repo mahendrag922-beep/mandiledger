@@ -10,6 +10,7 @@ exports.createVoucherReceipt = async ({
   unloading_charges ,
   brokerage_commission ,
   quality_claim ,
+  transport_charges,
   bank_charges ,
   final_received_amount,
   createdBy,
@@ -36,6 +37,7 @@ exports.createVoucherReceipt = async ({
     unloading_charges : unloading_charges,
     brokerage_commission :brokerage_commission,
     quality_claim :quality_claim ,
+    transport_charges:transport_charges,
     bank_charges :bank_charges ,
     final_received_amount:final_received_amount,
     created_by: createdBy

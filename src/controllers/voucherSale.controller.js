@@ -94,21 +94,23 @@ exports.createSaleVoucher = async (req, res, next) => {
     }
     // 🔥 TRANSPORT LOGIC
 
-let advance = Number(req.body.freight_advance) || 0;
-let totalFreight = Number(req.body.freight_total) || 0;
+let totalFreight = Number(req.body.freight_rate_per_qtl || 0) *
+                   (Number(req.body.final_weight_kg || 0) / 100);
 
-let remaining = totalFreight - advance;
+let advance = Number(req.body.freight_advance ?? 0);
 
-let status = "not paid";
+let remaining = Math.max(totalFreight - advance, 0);
 
-if (advance > 0 && remaining > 0) {
+
+let status;
+
+if (advance <= 0) {
+  status = "not paid";
+} else if (remaining > 0) {
   status = "partial paid";
-}
-
-if (remaining <= 0 && totalFreight > 0) {
+} else {
   status = "full paid";
 }
-
 /* ==============================
    INSERT TRANSPORT HISTORY FIRST
 ============================== */

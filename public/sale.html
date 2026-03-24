@@ -35,39 +35,47 @@
       <!-- STEP BUTTONS -->
       <div class="sale-steps">
 
-  <div class="voucher-card active" onclick="openStep(1)">
-    <div class="icon">🏭</div>
-    <div class="title">Mill Details</div>
-  </div>
+        <div class="voucher-card active" onclick="openStep(1)">
+          <div class="icon">🏭</div>
+          <div class="title">Mill Details</div>
+        </div>
 
-  <div class="voucher-card" onclick="openStep(2)">
-    <div class="icon">🌾</div>
-    <div class="title">Commodity</div>
-  </div>
+        <div class="voucher-card" onclick="openStep(2)">
+          <div class="icon">🌾</div>
+          <div class="title">Commodity</div>
+        </div>
 
-  <div class="voucher-card" onclick="openStep(3)">
-    <div class="icon">🤝</div>
-    <div class="title">Broker</div>
-  </div>
+        <div class="voucher-card" onclick="openStep(3)">
+          <div class="icon">🤝</div>
+          <div class="title">Broker</div>
+        </div>
 
-  <div class="voucher-card" onclick="openStep(4)">
-    <div class="icon">🚛</div>
-    <div class="title">Transport</div>
-  </div>
+        <div class="voucher-card" onclick="openStep(4)">
+          <div class="icon">🚛</div>
+          <div class="title">Transport</div>
+        </div>
 
-  <div class="voucher-card save" onclick="openStep(5)">
-    <div class="icon">💾</div>
-    <div class="title">Save</div>
-  </div>
+        <div class="voucher-card save" onclick="openStep(5)">
+          <div class="icon">💾</div>
+          <div class="title">Save</div>
+        </div>
 
-</div>
+      </div>
       <!-- ================= STEP 1 ================= -->
       <div class="sale-step-content" id="step-1">
 
-        <label>Mill Name</label>
-        <input id="millSearch" placeholder="Search Mill">
-        <div id="millList" class="dropdown"></div>
+        <div class="row">
+          <div style="flex:2;">
+            <label>Mill Name</label>
+            <input id="millSearch" placeholder="Search Mill">
+            <div id="millList" class="dropdown"></div>
+          </div>
 
+          <div style="flex:1;">
+            <label>Order No </label>
+            <input type="text" id="orderNo" placeholder="Enter Order No">
+          </div>
+        </div>
         <div class="info-grid">
           <div>GST No: <span id="millGst">-</span></div>
           <div>Place of Supply: <span id="millState">-</span></div>
@@ -254,4 +262,5 @@
   <script src="js/sale.js"></script>
 
 </body>
+
 </html>

@@ -7,7 +7,8 @@ const {
   profitReport,
   commodityStockReport,
   todayPurchases,
-  todaySales
+  todaySales,
+  dashboardCounts,
 } = require("../controllers/report.controller");
 
 const router = express.Router();
@@ -18,6 +19,6 @@ router.get("/profit", auth, role("trader"), profitReport);
 router.get("/stock-commodity", auth, commodityStockReport);
 router.get("/today-purchases", auth, todayPurchases);
 router.get("/today-sales", auth, todaySales);
-
+router.get("/dashboard-counts", auth,dashboardCounts);
 
 module.exports = router;

@@ -29,38 +29,59 @@
 
     <!-- 🔢 VOUCHER TYPE CARDS -->
     <div class="cards">
-  <div class="card blue" onclick="loadVouchers('purchase')">
-    <span>📥 Purchase</span>
-  </div>
+      <div class="card blue" onclick="loadVouchers('purchase')">
+        <span>📥 Purchase</span>
+      </div>
 
-  <div class="card green" onclick="loadVouchers('sale')">
-    <span>📤 Sale</span>
-  </div>
+      <div class="card green" onclick="loadVouchers('sale')">
+        <span>📤 Sale</span>
+      </div>
 
-  <div class="card orange" onclick="loadVouchers('transport')">
-    <span>🚛 Transport</span>
-  </div>
+      <div class="card orange" onclick="loadVouchers('transport')">
+        <span>🚛 Transport</span>
+      </div>
 
-  <div class="card red" onclick="loadVouchers('payment')">
-    <span>💸 Payment</span>
-  </div>
+      <div class="card red" onclick="loadVouchers('payment')">
+        <span>💸 Payment</span>
+      </div>
 
-  <div class="card purple" onclick="loadVouchers('receipt')">
-    <span>💰 Receipt</span>
-  </div>
-</div>
+      <div class="card purple" onclick="loadVouchers('receipt')">
+        <span>💰 Receipt</span>
+      </div>
+    </div>
+    <!-- PURCHASE FILTER -->
+    <div id="purchaseFilters" style="margin-bottom:10px; display:none;">
+      <button onclick="filterPurchase('all')">All</button>
+      <button onclick="filterPurchase('farmer')">Farmer Purchase</button>
+      <button onclick="filterPurchase('trader')">Trader Purchase</button>
+    </div>
+
+    <!-- PAYMENT FILTER -->
+    <div id="paymentFilters" style="margin-bottom:10px; display:none;">
+      <button onclick="filterPayment('all')">All</button>
+      <button onclick="filterPayment('farmer')">Farmer Payment</button>
+      <button onclick="filterPayment('trader')">Trader Payment</button>
+    </div>
     <!-- 📋 VOUCHER TABLE -->
-    <div class="table-box">
-      <h3 id="voucherTitle">Select voucher type</h3>
 
-      <table>
-        <thead id="voucherHead"></thead>
-        <tbody id="voucherBody">
-          <tr>
-            <td colspan="15">Select voucher type</td>
-          </tr>
-        </tbody>
-      </table>
+    <div class="table-box">
+      <input type="text" id="voucherSearch" placeholder="🔍 Search voucher / party / commodity..." class="search-box"
+        onkeyup="searchVouchers()" />
+        <button onclick="exportToExcel()">⬇ Export Excel</button>
+
+      <h3 id="voucherTitle">Select voucher type</h3>
+        
+      <div class="table-scroll">
+        <table>
+          <thead id="voucherHead"></thead>
+            
+          <tbody id="voucherBody">
+            <tr>
+              <td colspan="15">Select voucher type</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
   </div>

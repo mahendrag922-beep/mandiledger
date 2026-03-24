@@ -1,172 +1,270 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <title>Parties</title>
   <link rel="stylesheet" href="css/parties.css">
 </head>
+
 <body>
 
-<nav class="navbar">
-  <div class="logo">🌾 MandiLedger ERP</div>
-  <div class="nav-links">
-    <a href="dashboard.html">Dashboard</a>
-    <a href="brokers.html">Brokers</a>
-    <a href="transports.html">Transport</a>
-    <a href="purchase.html">Purchase</a>
-    <a href="sale.html">Sale</a>
-    <a href="ledger.html">Ledger</a>
-    <a href="payments.html">Payments</a>
-    <a href="vouchers.html" class="active">Vouchers</a>
-    <a href="stock-report.html">Stock Report</a>
-    <a href="reports.html">Reports</a>
-    <a href="#" onclick="logout()">Logout</a>
+  <nav class="navbar">
+    <div class="logo">🌾 MandiLedger ERP</div>
+    <div class="nav-links">
+      <a href="dashboard.html">Dashboard</a>
+      <a href="brokers.html">Brokers</a>
+      <a href="transports.html">Transport</a>
+      <a href="purchase.html">Purchase</a>
+      <a href="sale.html">Sale</a>
+      <a href="ledger.html">Ledger</a>
+      <a href="payments.html">Payments</a>
+      <a href="vouchers.html" class="active">Vouchers</a>
+      <a href="stock-report.html">Stock Report</a>
+      <a href="reports.html">Reports</a>
+      <a href="#" onclick="logout()">Logout</a>
+    </div>
+  </nav>
+  <button class="add-btn" onclick="openAddParty()">➕ Add Party</button>
+  <input type="text" id="partySearch" placeholder="🔍 Search party by name..." onkeyup="filterParties()"
+    class="search" />
+
+  <div class="container">
+    <!-- LEFT: PARTY LIST -->
+    <div class="party-list">
+      <h3>👥 Parties</h3>
+      <div id="partyCards"></div>
+    </div>
+
+    <!-- RIGHT: PARTY DETAILS -->
+    <div class="party-details">
+      <h3 id="partyTitle">Select a party</h3>
+
+      <div class="summary">
+        <div class="sum-card red">
+          <span id="leftLabel">Total Payable</span>
+          <h2 id="payable">₹ 0.00</h2>
+        </div>
+
+        <div class="sum-card green">
+          <span id="rightLabel">Total Received</span>
+          <h2 id="received">₹ 0.00</h2>
+        </div>
+
+        <div class="sum-card blue">
+          <span>Balance Left</span>
+          <h2 id="balance">₹ 0.00</h2>
+        </div>
+      </div>
+
+      <div style="margin-bottom:10px;">
+        From:
+        <input type="date" id="fromDate">
+        To:
+        <input type="date" id="toDate">
+        <button onclick="applyDateFilter()">Filter</button>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Particular</th>
+            <th>Debit</th>
+            <th>Credit</th>
+          </tr>
+        </thead>
+        <tbody id="historyTable">
+          <tr>
+            <td colspan="4">Select a party to view history</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
   </div>
-</nav>
-<button class="add-btn" onclick="openAddParty()">➕ Add Party</button>
-<input
-  type="text"
-  id="partySearch"
-  placeholder="🔍 Search party by name..."
-  onkeyup="filterParties()"
-  class="search"
-/>
 
-<div class="container">
-  <!-- LEFT: PARTY LIST -->
-  <div class="party-list">
-    <h3>👥 Parties</h3>
-    <div id="partyCards"></div>
+  <div id="partyModal" class="edit-modal">
+
+    <div class="modal-box">
+
+      <div class="modal-header">
+        ➕ Add Party
+      </div>
+
+      <div class="modal-body">
+
+        <div class="edit-grid">
+
+          <div>
+            <label>Party Name</label>
+            <input id="partyName">
+          </div>
+
+          <div>
+            <label>Party Type</label>
+            <select id="partyType" onchange="togglePartyFields()">
+              <option value="">Select Type</option>
+              <option value="farmer">Farmer</option>
+              <option value="mill">Mill</option>
+              <option value="trader">Trader</option>
+            </select>
+          </div>
+
+        </div>
+
+        <!-- FARMER -->
+        <div id="farmerFields" style="display:none; margin-top:20px;">
+
+          <h4>Farmer Details</h4>
+
+          <div class="edit-grid">
+
+            <div>
+              <label>Mobile</label>
+              <input id="mobile">
+            </div>
+
+            <div>
+              <label>Address</label>
+              <input id="address">
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- MILL -->
+        <div id="millFields" style="display:none; margin-top:20px;">
+
+          <h4>Mill Details</h4>
+
+          <div class="edit-grid">
+
+            <div>
+              <label>Company Name</label>
+              <input id="companyName">
+            </div>
+
+            <div>
+              <label>GST Number</label>
+              <input id="gstn">
+            </div>
+
+            <div>
+              <label>District</label>
+              <input id="district">
+            </div>
+
+            <div>
+              <label>State</label>
+              <input id="state">
+            </div>
+
+            <div>
+              <label>Pincode</label>
+              <input id="pincode">
+            </div>
+
+            <div>
+              <label>Address</label>
+              <input id="companyAddress">
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <div id="traderFields" style="display:none; margin-top:20px;">
+        <h4>Trader Details</h4>
+
+        <div class="edit-grid">
+
+          <div>
+            <label>Mobile</label>
+            <input id="traderMobile">
+          </div>
+
+          <div>
+            <label>GST Number</label>
+            <input id="traderGST">
+          </div>
+
+          <div>
+            <label>PAN Number</label>
+            <input id="pan">
+          </div>
+
+          <div>
+            <label>Address</label>
+            <input id="traderAddress">
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="modal-footer">
+        <button class="btn-cancel" onclick="closeAddParty()">Cancel</button>
+        <button class="btn-update" onclick="saveParty()">Save</button>
+      </div>
+
+    </div>
+
   </div>
 
-  <!-- RIGHT: PARTY DETAILS -->
-  <div class="party-details">
-    <h3 id="partyTitle">Select a party</h3>
-
-    <div class="summary">
-  <div class="sum-card red">
-    <span id="leftLabel">Total Payable</span>
-    <h2 id="payable">₹ 0.00</h2>
-  </div>
-
-  <div class="sum-card green">
-    <span id="rightLabel">Total Received</span>
-    <h2 id="received">₹ 0.00</h2>
-  </div>
-
-  <div class="sum-card blue">
-    <span>Balance Left</span>
-    <h2 id="balance">₹ 0.00</h2>
-  </div>
-</div>
-
-<div style="margin-bottom:10px;">
-  From:
-  <input type="date" id="fromDate">
-  To:
-  <input type="date" id="toDate">
-  <button onclick="applyDateFilter()">Filter</button>
-</div>
-
-    <table>
-      <thead>
-        <tr>
-          <th>Date</th>
-          <th>Particular</th>
-          <th>Debit</th>
-          <th>Credit</th>
-        </tr>
-      </thead>
-      <tbody id="historyTable">
-        <tr><td colspan="4">Select a party to view history</td></tr>
-      </tbody>
-    </table>
-  </div>
-
-</div>
-<div id="partyModal" class="modal">
-  <div class="modal-content">
-    <h3>Add New Party</h3>
-
-    <label>Party Name</label>
-    <input id="partyName" placeholder="e.g. Ram Singh">
-
-    <label>Party Type</label>
-<select id="partyType" onchange="togglePartyFields()">
-  <option value="">Select Type</option>
-  <option value="farmer">Farmer</option>
-  <option value="mill">Mill</option>
-</select>
-
-<div id="farmerFields" style="display:none;">
-  <label>Mobile Number</label>
-  <input id="mobile" placeholder="10 digit mobile">
-
-  <label>Address</label>
-  <textarea id="address" placeholder="Village / City / State"></textarea>
-</div>
-
-<div id="millFields" style="display:none;">
-  <label>GST Number</label>
-  <input id="gstn" placeholder="15-digit GSTIN">
-
-  <label>Company Name</label>
-  <input id="companyName" placeholder="Company name">
-
-  <label>Address</label>
-  <textarea id="companyAddress"></textarea>
-
-  <label>District</label>
-  <input id="district" placeholder="District">
-
-  <label>State</label>
-  <input id="state" placeholder="State">
-
-  <label>Pincode</label>
-  <input id="pincode" placeholder="6 digit pincode">
-</div>
-
-
-    <div class="modal-actions">
-      <button onclick="saveParty()">Save</button>
-      <button class="cancel" onclick="closeAddParty()">Cancel</button>
+  <div id="farmerModal" class="modal">
+    <div class="modal-content">
+      <h3>👨‍🌾 Farmer Details</h3>
+      <p><b>Name:</b> <span id="fmName"></span></p>
+      <p><b>Mobile:</b> <span id="fmMobile"></span></p>
+      <p><b>Address:</b> <span id="fmAddress"></span></p>
+      <button onclick="closeModal()">Close</button>
     </div>
   </div>
-</div>
-<div id="farmerModal" class="modal">
-  <div class="modal-content">
-    <h3>👨‍🌾 Farmer Details</h3>
-    <p><b>Name:</b> <span id="fmName"></span></p>
-    <p><b>Mobile:</b> <span id="fmMobile"></span></p>
-    <p><b>Address:</b> <span id="fmAddress"></span></p>
-    <button onclick="closeModal()">Close</button>
+  <div id="millModal" class="modal">
+    <div class="modal-content">
+      <h3>🏭 Mill Details</h3>
+
+      <p><b>Company:</b> <span id="mmCompany"></span></p>
+      <p><b>GSTN:</b> <span id="mmGSTN"></span></p>
+      <p><b>Address:</b> <span id="mmAddress"></span></p>
+      <p><b>State:</b> <span id="mmState"></span></p>
+      <p><b>District:</b> <span id="mmDistrict"></span></p>
+      <p><b>Pincode:</b> <span id="mmPincode"></span></p>
+
+      <button onclick="closeMillModal()">Close</button>
+    </div>
   </div>
-</div>
-<div id="millModal" class="modal">
-  <div class="modal-content">
-    <h3>🏭 Mill Details</h3>
+  <div id="traderModal" class="modal">
+    <div class="modal-content">
 
-    <p><b>Company:</b> <span id="mmCompany"></span></p>
-    <p><b>GSTN:</b> <span id="mmGSTN"></span></p>
-    <p><b>Address:</b> <span id="mmAddress"></span></p>
-    <p><b>State:</b> <span id="mmState"></span></p>
-    <p><b>District:</b> <span id="mmDistrict"></span></p>
-    <p><b>Pincode:</b> <span id="mmPincode"></span></p>
+      <h3>🧑‍💼 Trader Details</h3>
 
-    <button onclick="closeMillModal()">Close</button>
+      <p><b>Name:</b> <span id="tmName"></span></p>
+      <p><b>Mobile:</b> <span id="tmMobile"></span></p>
+      <p><b>GSTN:</b> <span id="tmGSTN"></span></p>
+      <p><b>PAN:</b> <span id="tmPAN"></span></p>
+      <p><b>Address:</b> <span id="tmAddress"></span></p>
+
+      <button onclick="closeTraderModal()">Close</button>
+
+    </div>
   </div>
-</div>
 
-
-<script src="js/api.js"></script>
-<script src="js/parties.js"></script>
-<script>
-  window.onclick = function(e) {
-    const modal = document.getElementById("farmerModal");
-    if (e.target === modal) {
-      modal.style.display = "none";
+  <script src="js/api.js"></script>
+  <script src="js/parties.js"></script>
+  <script>
+    window.onclick = function (e) {
+      const modal = document.getElementById("farmerModal");
+      if (e.target === modal) {
+        modal.style.display = "none";
+      }
     }
-  }
-</script>
+  </script>
 
 </body>
+
 </html>

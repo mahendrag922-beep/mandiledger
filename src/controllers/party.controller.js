@@ -39,18 +39,19 @@ exports.getParties = async (req, res, next) => {
 exports.getPartyById = async (req, res, next) => {
   const [rows] = await pool.query(
   `SELECT 
-     id,
-     name,
-     party_type,
-     mobile,
-     address,
-     gstn,
-     company_name,
-     state,
-     district,
-     pincode
-   FROM parties
-   WHERE id = ?`,
+ id,
+ name,
+ party_type,
+ mobile,
+ address,
+ gstn,
+ pan,
+ company_name,
+ state,
+ district,
+ pincode
+FROM parties
+WHERE id = ?`,
   [req.params.id]
 );
 

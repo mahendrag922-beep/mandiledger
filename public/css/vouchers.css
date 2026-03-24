@@ -267,3 +267,124 @@ th {
   background: #f9fafc;
   padding: 10px;
 }
+
+/* ERP TABLE SCROLL */
+
+/* ERP TABLE SCROLL AREA */
+
+.table-scroll{
+max-height:70vh;       /* vertical scroll */
+overflow:auto;         /* both directions */
+border:1px solid #e5e7eb;
+border-radius:6px;
+background:white;
+}
+
+/* TABLE */
+
+table{
+width:100%;
+border-collapse:collapse;
+min-width:1400px;      /* keep horizontal scroll */
+font-size:13px;
+}
+
+/* STICKY HEADER */
+
+thead th{
+position:sticky;
+top:0;
+background:#0f172a;
+color:white;
+padding:10px;
+text-align:left;
+z-index:10;
+}
+
+/* ROWS */
+
+tbody tr{
+border-bottom:1px solid #e5e7eb;
+}
+
+tbody tr:hover{
+background:#f8fafc;
+}
+
+/* CELLS */
+
+td{
+padding:8px;
+white-space:nowrap;
+}
+/* ERP BADGES */
+
+.badge{
+padding:3px 8px;
+border-radius:4px;
+font-size:12px;
+color:white;
+}
+
+.badge.trader{
+background:#7c3aed;
+}
+
+.badge.farmer{
+background:#16a34a;
+}
+
+.item-container{
+padding:10px;
+background:#f1f5f9;
+border-radius:6px;
+}
+
+.inner-table{
+width:100%;
+font-size:12px;
+border-collapse:collapse;
+}
+
+.inner-table th{
+background:#e5e7eb;
+position:static;
+color:#111;
+}
+
+.inner-table td{
+padding:6px;
+}
+
+/* STICKY FIRST COLUMN */
+
+th:first-child{
+position: sticky;
+left: 0;
+z-index: 20;
+background: #0f172a;   /* same as header */
+color: white;
+}
+
+td:first-child{
+position: sticky;
+left: 0;
+background: white;
+z-index: 5;
+border-right:1px solid #e5e7eb;
+}
+
+td:first-child,
+th:first-child{
+box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+}
+
+thead th{
+cursor:pointer;
+user-select:none;
+}
+
+thead th:hover{
+background:#1e293b;
+}
+

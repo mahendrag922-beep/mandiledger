@@ -310,6 +310,7 @@ async function saveSale() {
   const payload = {
     party_id: selectedMillId,
     party_name: mill.name,
+    order_no: document.getElementById("orderNo").value.trim(),
     gst_no: mill.gstn || "",
     place_of_supply: mill.state,
 
@@ -365,6 +366,7 @@ function resetSaleForm() {
   // Clear mill
   selectedMillId = null;
   document.getElementById("millSearch").value = "";
+  document.getElementById("orderNo").value = "";
   document.getElementById("millGst").innerText = "-";
   document.getElementById("millState").innerText = "-";
 

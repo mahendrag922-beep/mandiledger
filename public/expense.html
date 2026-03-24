@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Indirect Expense - MandiLedger</title>
+  <link rel="stylesheet" href="css/expense.css">
+</head>
+
+<body>
+
+  <nav class="navbar">
+    <div class="logo">🌾 MandiLedger ERP</div>
+    <div class="nav-links">
+      <a href="dashboard.html">Dashboard</a>
+      <a href="bank.html">Bank</a>
+      <a href="expense.html">Expense</a>
+      <a href="parties.html">Parties</a>
+      <a href="brokers.html">Brokers</a>
+      <a href="transports.html">Transport</a>
+      <a href="purchase.html">Purchase</a>
+      <a href="sale.html">Sale</a>
+      <a href="ledger.html">Ledger</a>
+      <a href="payments.html">Payments</a>
+      <a href="vouchers.html" class="active">Vouchers</a>
+      <a href="stock-report.html">Stock Report</a>
+
+      <a href="reports.html">Reports</a>
+      <a href="#" onclick="logout()">Logout</a>
+    </div>
+  </nav>
+
+  <div class="container">
+
+    <div class="sidebar">
+      <button onclick="showExpenseDashboard()">🏠 Home</button>
+      <button onclick="showDirect()">💰 Direct Expense</button>
+      <button onclick="showIndirect()">📊 Indirect Expense</button>
+      <button onclick="showFinance()">🏦 Finance</button>
+      <button onclick="showEmployee()">👨‍💼 Employee</button>
+      <button onclick="showMandiCommission()">🧾 Mandi Commission</button>
+      <button onclick="showMillAnalytics()">📈 Mill Analytics</button>
+    </div>
+
+    <div class="content" id="contentArea">
+      Select Module
+    </div>
+    <div id="millAdjustModal" class="modal">
+
+      <div class="modal-content">
+
+        <div class="modal-header">
+          <h3>Mill Adjustment Details</h3>
+          <span class="close" onclick="closeMillAdjust()">✖</span>
+        </div>
+
+        <div id="millAdjustBody"></div>
+
+      </div>
+
+    </div>
+  </div>
+  <script src="js/api.js"></script>
+  <script src="js/expense.js"></script>
+</body>
+
+</html>

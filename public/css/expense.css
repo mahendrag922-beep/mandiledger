@@ -1,0 +1,336 @@
+* {
+  box-sizing: border-box;
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+body {
+  margin: 0;
+  background: #f4f6f8;
+}
+
+/* NAVBAR */
+.navbar {
+  background: #0f172a;
+  color: white;
+  padding: 14px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.nav-links a {
+  color: #e5e7eb;
+  margin-left: 15px;
+  text-decoration: none;
+}
+
+
+.container {
+  display:flex;
+}
+
+.sidebar {
+  width:220px;
+  background:#1e293b;
+  min-height:100vh;
+  padding:15px;
+}
+
+.sidebar button {
+  width:100%;
+  padding:10px;
+  margin-bottom:10px;
+  background:#334155;
+  color:#fff;
+  border:none;
+  cursor:pointer;
+}
+
+.content {
+  flex:1;
+  padding:20px;
+  background:#fff;
+}
+/* =========================
+   ERP Action Buttons
+========================= */
+
+.erp-btn {
+  background: #1e293b;
+  color: #ffffff;
+  padding: 10px 18px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  transition: 0.3s;
+  margin: 5px 5px 5px 0;
+}
+
+.erp-btn:hover {
+  background: #334155;
+}
+
+.erp-btn.green {
+  background: #16a34a;
+}
+
+.erp-btn.green:hover {
+  background: #15803d;
+}
+
+.erp-btn.red {
+  background: #dc2626;
+}
+
+.erp-btn.red:hover {
+  background: #b91c1c;
+}
+
+.erp-btn.blue {
+  background: #2563eb;
+}
+
+.erp-btn.blue:hover {
+  background: #1d4ed8;
+}
+
+/* Button container */
+.action-row {
+  margin-bottom: 15px;
+}
+/* ===============================
+   Employee Section Card Buttons
+=============================== */
+
+.employee-actions {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 25px;
+  flex-wrap: wrap;
+}
+
+.employee-card {
+  flex: 1;
+  min-width: 180px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: 0.25s;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.employee-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+}
+
+.employee-card.active {
+  background: #2563eb;
+  color: white;
+  border-color: #2563eb;
+}
+
+.employee-card .icon {
+  font-size: 22px;
+  margin-bottom: 6px;
+}
+
+.employee-card .title {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* ===============================
+   Employee Forms
+=============================== */
+
+.employee-section {
+  display: none;
+}
+
+.employee-section.active {
+  display: block;
+}
+
+.employee-form label {
+  display: block;
+  margin-top: 12px;
+  font-size: 13px;
+  color: #374151;
+}
+
+.employee-form input,
+.employee-form select {
+  width: 100%;
+  padding: 8px;
+  margin-top: 4px;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+}
+
+.employee-save-btn {
+  margin-top: 18px;
+  padding: 10px 16px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.employee-save-btn:hover {
+  background: #1d4ed8;
+}
+
+/* Table */
+.employee-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+
+.employee-table th,
+.employee-table td {
+  border: 1px solid #e2e8f0;
+  padding: 8px;
+  text-align: left;
+}
+
+.employee-table th {
+  background: #f1f5f9;
+}
+
+/* ===============================
+   Professional Salary Card
+=============================== */
+
+.salary-card {
+  background: #ffffff;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  margin-top: 20px;
+}
+
+.salary-card h3 {
+  margin-bottom: 20px;
+}
+
+.salary-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 15px;
+}
+
+.salary-card label {
+  font-size: 13px;
+  color: #374151;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.salary-card input,
+.salary-card select {
+  width: 100%;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+}
+
+.salary-card input:focus,
+.salary-card select:focus {
+  border-color: #2563eb;
+  outline: none;
+}
+
+.modal{
+  display:none;
+  position:fixed;
+  z-index:999;
+  left:0;
+  top:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.4);
+}
+
+.modal-content{
+  background:#fff;
+  width:600px;
+  margin:80px auto;
+  border-radius:6px;
+  padding:20px;
+}
+
+.modal-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  border-bottom:1px solid #ddd;
+  margin-bottom:15px;
+}
+
+.close{
+  cursor:pointer;
+  font-size:18px;
+}
+
+.adjust-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+}
+
+.adjust-card{
+  background:#f4f6f9;
+  padding:10px;
+  text-align:center;
+  border-radius:5px;
+}
+
+.adjust-card span{
+  display:block;
+  font-size:12px;
+  color:#555;
+}
+
+.adjust-card b{
+  font-size:15px;
+}
+
+.employee-actions{
+display:flex;
+gap:20px;
+margin-top:20px;
+}
+
+.employee-card{
+background:#fff;
+padding:20px;
+border-radius:10px;
+box-shadow:0 2px 6px rgba(0,0,0,0.15);
+cursor:pointer;
+text-align:center;
+width:220px;
+}
+
+.icon{
+font-size:28px;
+margin-bottom:5px;
+}
+
+.sidebar button.active{
+background:#1abc9c;
+color:white;
+}

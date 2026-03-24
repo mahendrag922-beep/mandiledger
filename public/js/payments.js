@@ -83,6 +83,7 @@ function recalcMillAmount() {
   const brokerage = Number(brokerage_commission.value) || 0;
   const quality = Number(quality_claim.value) || 0;
   const bankCharges = Number(bank_charges.value) || 0;
+  const transportCharges = Number(transport_charges.value) || 0;
 
   const totalDeductions =
     caseDiscount +
@@ -90,7 +91,8 @@ function recalcMillAmount() {
     unloading +
     brokerage +
     quality +
-    bankCharges;
+    bankCharges+
+    transportCharges;
 
   const finalAmount = total - totalDeductions;
 
@@ -165,26 +167,31 @@ async function savePayment() {
   }
 
   const payload = {
-    party_id: +party_id.value,
-    voucher_no: voucher_no.value,
-    amount: +amount.value,
-    payment_type: payment_type.value,
-    direction: direction.value,
-    bank_id: bankSelect.value || null,
-    source_id:
-      payment_type.value === "bank"
-        ? bankEntrySelect.value
-        : cashSelect.value,
-    party_name: party_name.value || null,
-    case_discount: +case_discount?.value || 0,
-    weight_shortage: +weight_shortage?.value || 0,
-    unloading_charges: +unloading_charges?.value || 0,
-    brokerage_commission: +brokerage_commission?.value || 0,
-    quality_claim: +quality_claim?.value || 0,
-    bank_charges: +bank_charges?.value || 0
+  party_id: +party_id.value,
+  voucher_no: voucher_no.value,
+  amount: +amount.value,
+  payment_type: payment_type.value,
+  direction: direction.value,
+  bank_id: bankSelect.value || null,
+  source_id:
+    payment_type.value === "bank"
+      ? bankEntrySelect.value
+      : cashSelect.value,
 
-  };
+  party_name: party_name.value,
+  gst_no: gst_no.value,   // 🔥 ADD THIS
 
+  case_discount: +case_discount?.value || 0,
+  weight_shortage: +weight_shortage?.value || 0,
+  unloading_charges: +unloading_charges?.value || 0,
+  brokerage_commission: +brokerage_commission?.value || 0,
+  quality_claim: +quality_claim?.value || 0,
+  transport_charges: +transport_charges?.value || 0,
+  bank_charges: +bank_charges?.value || 0,
+
+  final_received_amount:
+    Number(document.getElementById("final_received_amount").innerText) || 0
+};
   const res = await api("/payments", {
     method: "POST",
     body: JSON.stringify(payload)
@@ -197,8 +204,9 @@ async function savePayment() {
 
   alert("Payment Successful");
   location.reload();
-}
-function fillPaymentForm(
+};
+
+async function fillPaymentForm(
   partyId,
   partyName,
   voucherNo,
@@ -210,6 +218,27 @@ function fillPaymentForm(
   party_name.value = partyName;
   voucher_no.value = voucherNo;
   amount.value = amt;
+  // 🔥 reset labels every time
+direction.options[0].text = "Paid (to Farmer)";
+direction.options[1].text = "Received (from Mill)";
+
+  const res = await api(`/parties/${partyId}`);
+  const data = await res.json();
+
+  const party = data.data;
+
+  // 🔥 Show GST only for trader
+  if (party.party_type === "trader") {
+
+    document.getElementById("gstSection").style.display = "block";
+
+    gst_no.value = party.gstn || "";
+  } else {
+
+    document.getElementById("gstSection").style.display = "none";
+    gst_no.value = "";
+
+  }
 
   if (dir === "received") {
 
@@ -222,27 +251,33 @@ function fillPaymentForm(
 
   else if (dir === "paid") {
 
-    direction.value = "paid";
-    payment_type.disabled = false;
-    payment_type.value = "cash";
+  direction.value = "paid";
+  payment_type.disabled = false;
+  payment_type.value = "cash";
 
-    document.getElementById("millAdjustments").style.display = "none";
+  document.getElementById("millAdjustments").style.display = "none";
+
+  // 🔥 detect party type
+  if (party.party_type === "trader") {
+    direction.options[0].text = "Paid (to Trader)";
+  } 
+  else if (party.party_type === "farmer") {
+    direction.options[0].text = "Paid (to Farmer)";
   }
-
+}
   else if (dir === "transport") {
 
-    direction.value = "paid";   // 🔥 internally paid
-    payment_type.disabled = false;
-    payment_type.value = "cash";
+  direction.value = "paid";
+  payment_type.disabled = false;
+  payment_type.value = "cash";
 
-    document.getElementById("millAdjustments").style.display = "none";
+  document.getElementById("millAdjustments").style.display = "none";
 
-    // 🔥 Change label dynamically
-    direction.options[0].text = "Paid (to Transport)";
-  }
+  direction.options[0].text = "Paid (to Transport)";
+}
 
   loadSources();
-}
+};
 
 let allDues = [];
 
@@ -301,7 +336,14 @@ function renderDueTable(type) {
       statusClass = "status-green";
       directionValue = "received";
     }
+    
+    else if (row.party_type === "trader") {
 
+  statusText = "Pay to Trader";
+  statusClass = "status-red";
+  directionValue = "paid";
+
+}
     else if (row.party_type === "transport") {
       statusText = "Pay to Transport";
       statusClass = "status-red";

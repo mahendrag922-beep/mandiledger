@@ -26,7 +26,7 @@ exports.generateSaleVoucherNo = async (conn) => {
 exports.createSaleVoucher = async (data, conn) => {
   const [result] = await conn.query(
     `INSERT INTO voucher_sale
-     (voucher_no, party_id, party_name, gst_no,
+     (voucher_no, order_no,party_id, party_name, gst_no,
       billing_address, shipping_address,
       place_of_supply,
       bags,
@@ -36,9 +36,10 @@ exports.createSaleVoucher = async (data, conn) => {
       total_weight_kg, final_weight_kg,
       rate_per_kg, total_amount, final_amount,
       created_by)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)`,
     [
       data.voucher_no,
+      data.order_no,
       data.party_id,
       data.party_name,
       data.gst_no,

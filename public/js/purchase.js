@@ -1,14 +1,25 @@
-let farmers = [];
 let commodities = [];
 let items = [];
 
 /* LOAD FARMERS */
+let parties = [];
+document.getElementById("purchaseDate").max =
+  new Date().toISOString().split("T")[0];
+
+
+  
 async function loadFarmers() {
+
   const res = await api("/parties");
   const data = await res.json();
-  farmers = data.data.filter(p => p.party_type === "farmer");
-}
-loadFarmers();
+
+  // Farmer + Trader allowed
+  parties = data.data.filter(p =>
+    p.party_type === "farmer" ||
+    p.party_type === "trader"
+  );
+
+} loadFarmers();
 /* FARMER SEARCH */
 document.getElementById("farmerSearch").addEventListener("input", function () {
 
@@ -18,27 +29,57 @@ document.getElementById("farmerSearch").addEventListener("input", function () {
 
   if (!q) return;
 
-  farmers
-    .filter(f => f.name.toLowerCase().includes(q))
-    .forEach(f => {
+  parties
+    .filter(p => p.name.toLowerCase().includes(q))
+    .forEach(p => {
 
       const div = document.createElement("div");
       div.className = "dropdown-item";
-      div.innerText = f.name;
 
-      div.onclick = () => selectFarmer(f);
+      const typeIcon =
+        p.party_type === "farmer" ? "🌾" : "🏪";
+
+      div.innerText = `${typeIcon} ${p.name}`;
+
+      div.onclick = () => selectParty(p);
 
       list.appendChild(div);
-    });
-});
-function selectFarmer(farmer) {
-  document.getElementById("farmerSearch").value = farmer.name;
-  document.getElementById("party_id").value = farmer.id;
-  document.getElementById("farmer_mobile").value = farmer.mobile || "";
-  document.getElementById("farmer_address").value = farmer.address || "";
-  document.getElementById("farmerList").innerHTML = "";
-}
 
+    });
+
+});
+function selectParty(party) {
+
+  document.getElementById("farmerSearch").value = party.name;
+
+  document.getElementById("party_id").value = party.id;
+
+  document.getElementById("farmer_mobile").value =
+    party.mobile || "";
+
+  document.getElementById("farmer_address").value =
+    party.address || "";
+
+  if (party.party_type === "trader") {
+
+    document.getElementById("party_gst").parentElement.style.display = "block";
+    document.getElementById("party_pan").parentElement.style.display = "block";
+
+  } else {
+
+    document.getElementById("party_gst").parentElement.style.display = "none";
+    document.getElementById("party_pan").parentElement.style.display = "none";
+
+  }
+
+  document.getElementById("party_gst").value =
+    party.gstn || "";
+
+  document.getElementById("party_pan").value =
+    party.pan || "";
+  document.getElementById("farmerList").innerHTML = "";
+
+}
 /* LOAD COMMODITIES */
 async function loadCommodities() {
 
@@ -70,12 +111,12 @@ function selectCommodity(value) {
   }
 }
 /* SHOW FORM */
-function showCommodityForm(){
+function showCommodityForm() {
   document.getElementById("commodityForm").style.display = "block";
 }
 
 /* ADD ITEM */
-function addCommodityItem(){
+function addCommodityItem() {
 
   const commodity = document.getElementById("commodity").value;
   const bags = Number(document.getElementById("bags").value) || 0;
@@ -84,8 +125,8 @@ function addCommodityItem(){
   const rate = Number(document.getElementById("rate").value) || 0;
   const commissionPercent = Number(document.getElementById("commission").value) || 0;
   const dhaltaGram = Number(document.getElementById("wajan_dhalta_input").value) || 0;
-  
-  if(!commodity || rate <= 0){
+
+  if (!commodity || rate <= 0) {
     alert("Select commodity and enter rate");
     return;
   }
@@ -99,7 +140,7 @@ function addCommodityItem(){
 
   items.push({
     commodity,
-    hsn_no: document.getElementById("hsn_no").value,  
+    hsn_no: document.getElementById("hsn_no").value,
     bags,
     total_weight_kg: totalWeight,
     wajan_dhalta_kg: dhaltaKg,
@@ -115,40 +156,138 @@ function addCommodityItem(){
   resetCommodityForm();
 }
 
+async function toggleUnloadPayment() {
+
+  const type =
+    document.getElementById("unloadPaymentType").value;
+
+  document.getElementById("unloadCashSection").style.display =
+    type === "cash" ? "block" : "none";
+
+  document.getElementById("unloadBankSection").style.display =
+    type === "bank" ? "block" : "none";
+
+  if (type === "cash") loadUnloadCash();
+
+  if (type === "bank") loadUnloadBanks();
+
+};
+
+
+async function loadUnloadCash() {
+
+  const res = await api("/cash");
+  const data = await res.json();
+
+  const select =
+    document.getElementById("unloadCashId");
+
+  select.innerHTML = `<option value="">Select Cash</option>`;
+
+  data.data.forEach(c => {
+
+    select.innerHTML += `
+<option value="${c.cash_id}">
+${c.cash_id} - ₹ ${Number(c.remaining_amount).toFixed(2)}
+</option>
+`;
+
+  });
+
+};
+
+
+async function loadUnloadBanks() {
+
+  const res = await api("/banks");
+  const data = await res.json();
+
+  const select =
+    document.getElementById("unloadBankId");
+
+  select.innerHTML =
+    `<option value="">Select Bank</option>`;
+
+  data.data.forEach(b => {
+
+    select.innerHTML += `
+<option value="${b.id}">
+${b.bank_name} (₹ ${Number(b.balance).toFixed(2)})
+</option>
+`;
+
+  });
+
+};
+
+async function loadUnloadBankEntries() {
+
+  const bankId =
+    document.getElementById("unloadBankId").value;
+
+  if (!bankId) return;
+
+  const res =
+    await api(`/banks/${bankId}/history`);
+
+  const data = await res.json();
+
+  const select =
+    document.getElementById("unloadBankEntryId");
+
+  select.innerHTML =
+    `<option value="">Select Bank Entry</option>`;
+
+  data.data.forEach(e => {
+
+    if (Number(e.remaining_amount) > 0) {
+
+      select.innerHTML += `
+<option value="${e.id}">
+${e.voucher_no} - ₹ ${Number(e.remaining_amount).toFixed(2)}
+</option>
+`;
+
+    }
+
+  });
+
+};
+
 /* RESET FORM */
-function resetCommodityForm(){
-  document.getElementById("commodity").value="";
-  document.getElementById("bags").value="";
-  document.getElementById("quintal").value="";
-  document.getElementById("kg").value="";
-  document.getElementById("rate").value="";
-  document.getElementById("commission").value="";
-  document.getElementById("wajan_dhalta_input").value="";
-  document.getElementById("commodityForm").style.display="none";
-  document.getElementById("gaddiNo").value="";
-  document.getElementById("unloadingCharge").value="";
+function resetCommodityForm() {
+  document.getElementById("commodity").value = "";
+  document.getElementById("bags").value = "";
+  document.getElementById("quintal").value = "";
+  document.getElementById("kg").value = "";
+  document.getElementById("rate").value = "";
+  document.getElementById("commission").value = "";
+  document.getElementById("wajan_dhalta_input").value = "";
+  document.getElementById("commodityForm").style.display = "none";
+  document.getElementById("gaddiNo").value = "";
+  document.getElementById("unloadingCharge").value = "";
 
 }
 
 /* RENDER SUMMARY */
-function renderSummary(){
+function renderSummary() {
   const unloadingCharge =
-  Number(document.getElementById("unloadingCharge").value) || 0;
+    Number(document.getElementById("unloadingCharge").value) || 0;
 
   const gaddiNo =
-  document.getElementById("gaddiNo").value || "";
-  let html="";
-  let totalWeight=0;
-  let totalDhalta=0;
-  let totalGross=0;
-  let totalCommission=0;
-  let totalFinal=0;
+    document.getElementById("gaddiNo").value || "";
+  let html = "";
+  let totalWeight = 0;
+  let totalDhalta = 0;
+  let totalGross = 0;
+  let totalCommission = 0;
+  let totalFinal = 0;
 
-  items.forEach((item,i)=>{
+  items.forEach((item, i) => {
 
     html += `
       <div style="padding:8px;border-bottom:1px solid #ddd;">
-        <b>${i+1}. ${item.commodity}</b>
+        <b>${i + 1}. ${item.commodity}</b>
         | Final Weight: ${item.final_weight_kg.toFixed(2)} Kg
         | Final Amount: ₹ ${item.final_amount.toFixed(2)}
       </div>
@@ -163,9 +302,9 @@ function renderSummary(){
 
   document.getElementById("commoditySummary").innerHTML = html;
 
-  totalWeightEl.innerText = totalWeight.toFixed(2)+" Kg";
-  dhaltaEl.innerText = totalDhalta.toFixed(2)+" Kg";
-  finalWeightEl.innerText = (totalWeight-totalDhalta).toFixed(2)+" Kg";
+  totalWeightEl.innerText = totalWeight.toFixed(2) + " Kg";
+  dhaltaEl.innerText = totalDhalta.toFixed(2) + " Kg";
+  finalWeightEl.innerText = (totalWeight - totalDhalta).toFixed(2) + " Kg";
   grossAmountEl.innerText = totalGross.toFixed(2);
   discountEl.value = totalCommission.toFixed(2);
   const finalPayable = totalFinal - unloadingCharge;
@@ -173,29 +312,47 @@ function renderSummary(){
 }
 
 /* SAVE PURCHASE */
-async function savePurchase(){
+async function savePurchase() {
 
-  if(!party_id.value){
+  if (!party_id.value) {
     alert("Select farmer");
     return;
   }
 
-  if(items.length === 0){
+  if (items.length === 0) {
     alert("Add at least one commodity");
     return;
   }
 
-  await api("/vouchers/purchase",{
-    method:"POST",
+  await api("/vouchers/purchase", {
+    method: "POST",
     body: JSON.stringify({
-  party_id: Number(party_id.value),
-  vehicle_no: vehicle_no.value,
-  gaddi_no: document.getElementById("gaddiNo").value || "",
-  unloading_charge: Number(document.getElementById("unloadingCharge").value) || 0,
-  items: items
-})
+
+      // ✅ NEW DATE FIELD
+      purchase_date: document.getElementById("purchaseDate").value,
+
+      party_id: Number(party_id.value),
+      vehicle_no: vehicle_no.value,
+      gaddi_no: document.getElementById("gaddiNo").value,
+
+      unloading_charge:
+        Number(document.getElementById("unloadingCharge").value),
+
+      unload_payment_type:
+        document.getElementById("unloadPaymentType").value,
+
+      unload_cash_id:
+        document.getElementById("unloadCashId").value,
+
+      unload_bank_id:
+        document.getElementById("unloadBankId").value,
+
+      unload_bank_entry_id:
+        document.getElementById("unloadBankEntryId").value,
+
+      items
+    })
   });
-  
   alert("Voucher Created Successfully");
   location.reload();
 }
